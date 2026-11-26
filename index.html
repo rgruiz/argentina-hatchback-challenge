@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es-AR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,18 +18,18 @@
           <div class="track-badge">
             <span id="hud-circuit-name">AUTÓDROMO BS. AS. — CIRCUITO N°12</span>
             <span class="pos-badge" id="hud-pos">P2 / 2</span>
-            <span class="lap-counter" id="hud-lap">LAP 1 / 3</span>
+            <span class="lap-counter" id="hud-lap">VTA 1 / 3</span>
           </div>
           <div class="time-row">
-            <span class="time-label">CURRENT</span>
+            <span class="time-label">ACTUAL</span>
             <span class="time-value" id="hud-cur-time">00:00.000</span>
           </div>
           <div class="time-row">
-            <span class="time-label">BEST LAP</span>
+            <span class="time-label">MEJOR VUELTA</span>
             <span class="time-value best" id="hud-best-time">--:--.---</span>
           </div>
           <div class="time-row">
-            <span class="time-label">LAST LAP</span>
+            <span class="time-label">ÚLTIMA VUELTA</span>
             <span class="time-value last" id="hud-last-time">--:--.---</span>
           </div>
           <div class="sectors-row">
@@ -56,50 +56,50 @@
           </div>
 
           <div class="offtrack-warning" id="offtrack-warning">
-            OFF TRACK — REDUCED GRIP
+            FUERA DE PISTA — MENOR AGARRE
           </div>
 
           <div class="race-finish-banner hidden" id="race-finish-banner">
-            <div class="finish-title" id="finish-title">🏁 RACE FINISHED!</div>
-            <div class="finish-sub" id="finish-sub">Press R for Rematch or ESC for Garage</div>
+            <div class="finish-title" id="finish-title">🏁 ¡CARRERA FINALIZADA!</div>
+            <div class="finish-sub" id="finish-sub">Presioná R para revancha o ESC para el taller</div>
           </div>
         </div>
 
         <!-- Right: Camera Switcher & Quick Toggles -->
         <div class="quick-controls">
           <div class="control-buttons">
-            <button class="hud-btn active-cam" id="btn-camera" title="Switch Camera (C)">
-              <span id="cam-label">CAM: 3RD PERSON CHASE</span>
+            <button class="hud-btn active-cam" id="btn-camera" title="Cambiar cámara (C)">
+              <span id="cam-label">CÁM: 3.ª PERSONA</span>
               <span class="key-hint">C</span>
             </button>
-            <button class="hud-btn" id="btn-shift-down" title="Shift Down (Q / Ctrl)">
-              <span>SHIFT −</span>
+            <button class="hud-btn" id="btn-shift-down" title="Bajar cambio (Q / Ctrl)">
+              <span>CAMBIO −</span>
               <span class="key-hint">Q</span>
             </button>
-            <button class="hud-btn" id="btn-shift-up" title="Shift Up (E / Shift)">
-              <span>SHIFT +</span>
+            <button class="hud-btn" id="btn-shift-up" title="Subir cambio (E / Shift)">
+              <span>CAMBIO +</span>
               <span class="key-hint">E</span>
             </button>
-            <button class="hud-btn" id="btn-reset" title="Reset Car to Track (R)">
-              <span>RESET</span>
+            <button class="hud-btn" id="btn-reset" title="Reiniciar auto en pista (R)">
+              <span>REINICIAR</span>
               <span class="key-hint">R</span>
             </button>
-            <button class="hud-btn" id="btn-audio" title="Mute / Unmute Engine Sound">
-              <span id="audio-label">SOUND: ON</span>
+            <button class="hud-btn" id="btn-audio" title="Silenciar / activar sonido del motor">
+              <span id="audio-label">SONIDO: SÍ</span>
             </button>
-            <button class="hud-btn" id="btn-menu" title="Open Garage & Track Menu (ESC)">
-              <span>GARAGE / TRACK</span>
+            <button class="hud-btn" id="btn-menu" title="Abrir menú de taller y pista (ESC)">
+              <span>TALLER / PISTA</span>
               <span class="key-hint">ESC</span>
             </button>
           </div>
           <div class="controls-legend">
-            <strong>W / ↑</strong> Throttle &nbsp;|&nbsp;
-            <strong>S / ↓</strong> Brake &nbsp;|&nbsp;
-            <strong>A D / ← →</strong> Steer &nbsp;|&nbsp;
-            <strong>E / SHIFT</strong> Gear + &nbsp;|&nbsp;
-            <strong>Q / CTRL</strong> Gear − &nbsp;|&nbsp;
-            <strong>V / B / N</strong> Look L / Back / R &nbsp;|&nbsp;
-            <strong>C</strong> Cam
+            <strong>W / ↑</strong> Acelerar &nbsp;|&nbsp;
+            <strong>S / ↓</strong> Frenar &nbsp;|&nbsp;
+            <strong>A D / ← →</strong> Doblar &nbsp;|&nbsp;
+            <strong>E / SHIFT</strong> Subir cambio &nbsp;|&nbsp;
+            <strong>Q / CTRL</strong> Bajar cambio &nbsp;|&nbsp;
+            <strong>V / B / N</strong> Mirar Izq. / Atrás / Der. &nbsp;|&nbsp;
+            <strong>C</strong> Cámara
           </div>
         </div>
       </div>
@@ -129,11 +129,11 @@
             </div>
             <div class="pedal-bars">
               <div class="pedal-row">
-                <span>THR</span>
+                <span>ACL</span>
                 <div class="pedal-track"><div class="pedal-fill throttle" id="bar-throttle"></div></div>
               </div>
               <div class="pedal-row">
-                <span>BRK</span>
+                <span>FRN</span>
                 <div class="pedal-track"><div class="pedal-fill brake" id="bar-brake"></div></div>
               </div>
             </div>
@@ -159,25 +159,25 @@
 
         <div class="menu-grid">
           <div class="menu-section">
-            <h3>1. Hatchback, Track &amp; Session Setup</h3>
+            <h3>1. Auto, Circuito y Configuración de Sesión</h3>
 
             <div class="option-group">
-              <span class="option-label">Session / Race Mode (Random AI Cars &amp; Same Physics)</span>
+              <span class="option-label">Modo de sesión / carrera (autos IA aleatorios e igual física)</span>
               <div class="pill-selector" id="mode-selector">
                 <button class="choice-btn selected" data-mode="race1">
-                  1v1 Race (vs 1 AI • 3 Laps)
+                  Carrera 1v1 (vs. 1 IA • 3 vueltas)
                 </button>
                 <button class="choice-btn" data-mode="race3">
-                  Grid Race (vs 3 AI • 3 Laps)
+                  Grilla completa (vs. 3 IA • 3 vueltas)
                 </button>
                 <button class="choice-btn" data-mode="practice">
-                  Solo Practice (Free Laps)
+                  Práctica libre (vueltas libres)
                 </button>
               </div>
             </div>
 
             <div class="option-group">
-              <span class="option-label">Select Stock Hatchback</span>
+              <span class="option-label">Elegí tu hatchback de serie</span>
               <div class="pill-selector" id="car-selector">
                 <button class="choice-btn selected" data-car="polo">
                   VW Polo Track 1.6 MSI (110 CV)
@@ -189,7 +189,7 @@
             </div>
 
             <div class="option-group">
-              <span class="option-label">Autódromo de Buenos Aires Layout</span>
+              <span class="option-label">Trazado del Autódromo de Buenos Aires</span>
               <div class="pill-selector" id="layout-selector">
                 <button class="choice-btn selected" data-layout="12">
                   Circuito N° 12 (Salotto + Ascari)
@@ -201,22 +201,22 @@
             </div>
 
             <div class="option-group">
-              <span class="option-label">Starting Camera View (Switch anytime with C)</span>
+              <span class="option-label">Cámara inicial (cambiá en cualquier momento con C)</span>
               <div class="pill-selector" id="camera-selector">
                 <button class="choice-btn selected" data-cam="0">
-                  3rd Person Exterior
+                  Exterior 3.ª persona
                 </button>
                 <button class="choice-btn" data-cam="1">
-                  3D Cockpit Interior
+                  Interior cabina 3D
                 </button>
                 <button class="choice-btn" data-cam="2">
-                  Hood / Bonnet Cam
+                  Cámara de capot
                 </button>
               </div>
             </div>
 
             <div class="option-group">
-              <span class="option-label" id="color-label">Factory Dealership Paint</span>
+              <span class="option-label" id="color-label">Pintura oficial de concesionario</span>
               <div class="color-swatches" id="color-selector">
                 <button class="color-swatch selected" data-color="silver">
                   <span class="swatch-dot" style="background: #b4bec8;"></span>
@@ -226,43 +226,43 @@
             </div>
 
             <div class="option-group">
-              <span class="option-label">Time of Day &amp; 2000s Visuals</span>
+              <span class="option-label">Momento del día y estética 2000s</span>
               <div class="pill-selector" id="weather-selector">
                 <button class="choice-btn selected" data-time="day">
-                  Sunny Porteño Afternoon
+                  Tarde porteña soleada
                 </button>
                 <button class="choice-btn" data-time="sunset">
-                  Golden Hour Sunset
+                  Atardecer dorado
                 </button>
                 <button class="choice-btn" data-time="dusk">
-                  Twilight Floodlights
+                  Anochecer con reflectores
                 </button>
               </div>
             </div>
           </div>
 
           <div class="menu-section">
-            <h3>2. Stock Dealership Specs &amp; Circuit Data</h3>
+            <h3>2. Ficha técnica de serie y datos del circuito</h3>
             <ul class="car-specs-list" id="car-specs-list">
-              <li><span>Vehicle</span><span>Volkswagen Polo Track MY25 (Mk6)</span></li>
-              <li><span>Engine</span><span>1.6L MSI 16V (110 CV / 155 Nm)</span></li>
-              <li><span>Transmission</span><span>5-Speed Manual Only (Q / E Shift)</span></li>
-              <li><span>0–100 km/h / Top</span><span>10.6 sec / 190 km/h (Stock Spec)</span></li>
-              <li><span>Instrument Cluster</span><span>Analog Dials + VW I-System LCD</span></li>
-              <li><span>Infotainment</span><span>10.1" VW Play Touchscreen (MY25)</span></li>
-              <li><span>Steering Wheel</span><span>Stock 3-Spoke VW Multifunction</span></li>
-              <li><span>Famous Corners</span><span>S del Ciervo, Salotto, Ascari, Horquilla</span></li>
+              <li><span>Vehículo</span><span>Volkswagen Polo Track MY25 (Mk6)</span></li>
+              <li><span>Motor</span><span>1.6L MSI 16V (110 CV / 155 Nm)</span></li>
+              <li><span>Transmisión</span><span>Manual de 5 marchas (cambios Q / E)</span></li>
+              <li><span>0–100 km/h / Máx.</span><span>10,6 s / 190 km/h (de serie)</span></li>
+              <li><span>Tablero</span><span>Relojes analógicos + pantalla VW I-System</span></li>
+              <li><span>Multimedia</span><span>Pantalla táctil VW Play 10,1" (MY25)</span></li>
+              <li><span>Volante</span><span>Volante VW multifunción de 3 rayos</span></li>
+              <li><span>Curvas clásicas</span><span>S del Ciervo, Salotto, Ascari, Horquilla</span></li>
             </ul>
           </div>
         </div>
 
         <div class="menu-footer">
           <div class="controls-summary">
-            <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> Drive &amp; Steer &nbsp;|&nbsp; <kbd>E</kbd> / <kbd>SHIFT</kbd> Shift Up &nbsp;|&nbsp; <kbd>Q</kbd> / <kbd>CTRL</kbd> Shift Down</div>
-            <div><kbd>C</kbd> Change Camera (Cockpit / 3rd Person) &nbsp;|&nbsp; <kbd>SPACE</kbd> Handbrake &nbsp;|&nbsp; <kbd>V</kbd>/<kbd>B</kbd>/<kbd>N</kbd> Look Left / Back / Right &nbsp;|&nbsp; <kbd>R</kbd> Reset</div>
+            <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> Acelerar, frenar y doblar &nbsp;|&nbsp; <kbd>E</kbd> / <kbd>SHIFT</kbd> Subir cambio &nbsp;|&nbsp; <kbd>Q</kbd> / <kbd>CTRL</kbd> Bajar cambio</div>
+            <div><kbd>C</kbd> Cambiar cámara (Cabina / 3.ª persona) &nbsp;|&nbsp; <kbd>ESPACIO</kbd> Freno de mano &nbsp;|&nbsp; <kbd>V</kbd>/<kbd>B</kbd>/<kbd>N</kbd> Mirar Izq. / Atrás / Der. &nbsp;|&nbsp; <kbd>R</kbd> Reiniciar</div>
           </div>
           <button class="start-race-btn" id="btn-start-race">
-            DRIVE EL GÁLVEZ ▶
+            SALIR A PISTA EN EL GÁLVEZ ▶
           </button>
         </div>
       </div>

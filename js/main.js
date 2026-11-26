@@ -119,31 +119,31 @@
     polo: {
       hudBadge: 'VW POLO TRACK 1.6',
       tachTitle: 'POLO TRACK',
-      colorTitle: 'Volkswagen Polo Track Official Colors',
+      colorTitle: 'Colores oficiales — Volkswagen Polo Track',
       specs: [
-        ['Vehicle', 'Volkswagen Polo Track MY25 (Mk6)'],
-        ['Engine', '1.6L MSI 16V (110 CV / 155 Nm)'],
-        ['Transmission', '5-Speed Manual Only (Q / E Shift)'],
-        ['0–100 km/h / Top', '10.6 sec / 190 km/h (Stock Spec)'],
-        ['Instrument Cluster', 'Analog Dials + VW I-System LCD'],
-        ['Infotainment', '10.1" VW Play Touchscreen (MY25)'],
-        ['Steering Wheel', 'Stock 3-Spoke VW Multifunction'],
-        ['Famous Corners', 'S del Ciervo, Salotto, Ascari, Horquilla']
+        ['Vehículo', 'Volkswagen Polo Track MY25 (Mk6)'],
+        ['Motor', '1.6L MSI 16V (110 CV / 155 Nm)'],
+        ['Transmisión', 'Manual de 5 marchas (cambios Q / E)'],
+        ['0–100 km/h / Máx.', '10,6 s / 190 km/h (de serie)'],
+        ['Tablero', 'Relojes analógicos + pantalla VW I-System'],
+        ['Multimedia', 'Pantalla táctil VW Play 10,1" (MY25)'],
+        ['Volante', 'Volante VW multifunción de 3 rayos'],
+        ['Curvas clásicas', 'S del Ciervo, Salotto, Ascari, Horquilla']
       ]
     },
     peugeot208: {
       hudBadge: 'PEUGEOT 208 1.3',
       tachTitle: 'PEUGEOT 208',
-      colorTitle: 'Peugeot 208 Like MT Official Colors',
+      colorTitle: 'Colores oficiales — Peugeot 208 Like MT',
       specs: [
-        ['Vehicle', 'Peugeot 208 Like MT (Argentina Spec)'],
-        ['Engine', '1.3L Firefly 8V (96 CV / 125 Nm)'],
-        ['Transmission', '5-Speed Manual Only (Q / E Shift)'],
-        ['0–100 km/h / Top', '11.8 sec / 180 km/h (Stock Spec)'],
-        ['Instrument Cluster', 'Peugeot i-Cockpit (CCW Tachometer)'],
-        ['Infotainment', '10" Touchscreen + Chrome Piano Keys'],
-        ['Steering Wheel', 'Compact Double-Flat 2-Spoke i-Cockpit'],
-        ['Famous Corners', 'S del Ciervo, Salotto, Ascari, Horquilla']
+        ['Vehículo', 'Peugeot 208 Like MT (versión Argentina)'],
+        ['Motor', '1.3L Firefly 8V (96 CV / 125 Nm)'],
+        ['Transmisión', 'Manual de 5 marchas (cambios Q / E)'],
+        ['0–100 km/h / Máx.', '11,8 s / 180 km/h (de serie)'],
+        ['Tablero', 'Peugeot i-Cockpit (tacómetro antihorario)'],
+        ['Multimedia', 'Pantalla táctil 10" + teclas tipo piano'],
+        ['Volante', 'Compacto i-Cockpit de 2 rayos achatado'],
+        ['Curvas clásicas', 'S del Ciervo, Salotto, Ascari, Horquilla']
       ]
     }
   };
@@ -233,10 +233,10 @@
   // 2: Hood / Bonnet Cam
   // 3: Far Arcade Chase Cam
   const CAMERA_MODES = [
-    { name: '3RD PERSON CHASE', fov: 58 },
-    { name: 'STOCK COCKPIT INTERIOR', fov: 72 },
-    { name: 'HOOD / BONNET CAM', fov: 62 },
-    { name: 'FAR ARCADE CHASE', fov: 64 }
+    { name: '3.ª PERSONA', fov: 58 },
+    { name: 'CABINA INTERIOR', fov: 72 },
+    { name: 'CAPOT', fov: 62 },
+    { name: 'PERSECUCIÓN LEJANA', fov: 64 }
   ];
   let cameraMode = 0;
 
@@ -281,7 +281,7 @@
   function setCameraMode(modeIndex) {
     cameraMode = (modeIndex + CAMERA_MODES.length) % CAMERA_MODES.length;
     const mode = CAMERA_MODES[cameraMode];
-    camLabel.textContent = `CAM: ${mode.name}`;
+    camLabel.textContent = `CÁM: ${mode.name}`;
     camera.fov = mode.fov;
     camera.updateProjectionMatrix();
 
@@ -454,7 +454,7 @@
   btnAudio.addEventListener('click', () => {
     sound.init();
     const muted = sound.toggleMute();
-    audioLabel.textContent = muted ? 'SOUND: OFF' : 'SOUND: ON';
+    audioLabel.textContent = muted ? 'SONIDO: NO' : 'SONIDO: SÍ';
     btnAudio.blur();
   });
 
@@ -877,7 +877,7 @@
     const racers = [
       {
         isPlayer: true,
-        name: 'YOU',
+        name: 'VOS',
         carLabel: activeCarKey === 'peugeot208' ? '208' : 'POLO',
         colorHex: playerHex,
         physics
@@ -922,7 +922,7 @@
 
     if (isRace) {
       const displayLap = Math.min(physics.lapCount, TOTAL_RACE_LAPS);
-      hudLap.textContent = `LAP ${displayLap} / ${TOTAL_RACE_LAPS}`;
+      hudLap.textContent = `VTA ${displayLap} / ${TOTAL_RACE_LAPS}`;
 
       const standings = buildSortedStandings();
       const playerRank = standings.findIndex(r => r.isPlayer) + 1;
@@ -937,7 +937,7 @@
         const refSpeed = Math.max(20, (leader.physics.speed + 26) * 0.5);
 
         raceStandingsEl.innerHTML = standings.map((r, idx) => {
-          let gapText = 'LEADER';
+          let gapText = 'LÍDER';
           if (idx > 0) {
             if (r.physics.raceFinished && leader.physics.raceFinished) {
               gapText = `+${(r.physics.finishTime - leader.physics.finishTime).toFixed(2)}s`;
@@ -960,7 +960,7 @@
         }).join('');
       }
     } else {
-      hudLap.textContent = `LAP ${physics.lapCount}`;
+      hudLap.textContent = `VTA ${physics.lapCount}`;
       if (hudPos) hudPos.classList.add('hidden');
       if (raceStandingsEl) raceStandingsEl.innerHTML = '';
     }
@@ -1059,11 +1059,11 @@
           const totalTimeStr = formatTime(physics.finishTime);
           if (finishTitleEl) {
             finishTitleEl.textContent = playerPos === 1
-              ? '🏁 1ST PLACE — VICTORY!'
-              : `🏁 FINISHED P${playerPos} / ${standings.length}`;
+              ? '🏁 ¡1.° PUESTO — VICTORIA!'
+              : `🏁 FINALIZASTE P${playerPos} / ${standings.length}`;
           }
           if (finishSubEl) {
-            finishSubEl.textContent = `Time: ${totalTimeStr} • Press R for Rematch or ESC for Garage`;
+            finishSubEl.textContent = `Tiempo: ${totalTimeStr} • Presioná R para revancha o ESC para el taller`;
           }
           raceFinishBanner.classList.remove('hidden');
         }

@@ -2384,7 +2384,7 @@ class Peugeot208Car {
       // Minimalist 2x4 White Line-Art Icon Grid (Image 5!)
       const gridItems = [
         { ico: '📻', lbl: 'Radio', x: 118, y: 102 },
-        { ico: '📞', lbl: 'Phone', x: 222, y: 102 },
+        { ico: '📞', lbl: 'Teléfono', x: 222, y: 102 },
         { ico: '▲',  lbl: 'Android Auto', x: 326, y: 102 },
         { ico: '▶',  lbl: 'CarPlay', x: 430, y: 102 },
         { ico: '📱', lbl: 'iPod', x: 118, y: 204 },
