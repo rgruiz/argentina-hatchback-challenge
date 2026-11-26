@@ -2,7 +2,10 @@
 <html lang="es-AR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Argentina Hatchback Challenge — Autódromo de Buenos Aires</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -87,6 +90,9 @@
             <button class="hud-btn" id="btn-audio" title="Silenciar / activar sonido del motor">
               <span id="audio-label">SONIDO: SÍ</span>
             </button>
+            <button class="hud-btn mobile-only-btn" id="btn-fullscreen" title="Pantalla completa">
+              <span id="fs-label">⛶</span>
+            </button>
             <button class="hud-btn" id="btn-menu" title="Abrir menú de taller y pista (ESC)">
               <span>TALLER / PISTA</span>
               <span class="key-hint">ESC</span>
@@ -140,6 +146,92 @@
           </div>
         </div>
       </div>
+
+      <!-- Mobile Touch Controls (Visible in Mobile Racing Mode) -->
+      <div id="mobile-controls" aria-label="Controles táctiles">
+        <!-- Bottom-Left: Translucent Steering Wheel Joystick -->
+        <div id="touch-steer-zone">
+          <div id="touch-steer-pad" role="slider" aria-label="Volante">
+            <div class="steer-ticks">
+              <span class="steer-tick left">◀</span>
+              <span class="steer-tick right">▶</span>
+            </div>
+            <svg id="touch-steer-wheel" viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="60" r="49" fill="rgba(8, 14, 28, 0.35)" stroke="rgba(226, 232, 240, 0.85)" stroke-width="10" />
+              <circle cx="60" cy="60" r="49" fill="none" stroke="rgba(15, 23, 42, 0.7)" stroke-width="2" />
+              <rect x="55" y="6" width="10" height="10" rx="2" fill="#ffd100" />
+              <path d="M16 57 H46 M74 57 H104 M60 72 V106" stroke="rgba(226, 232, 240, 0.85)" stroke-width="9" stroke-linecap="round" />
+              <circle cx="60" cy="60" r="15" fill="rgba(15, 23, 42, 0.88)" stroke="rgba(0, 176, 240, 0.85)" stroke-width="3" />
+              <circle cx="60" cy="60" r="5" fill="#74acdf" />
+            </svg>
+            <div class="steer-bar-track">
+              <div class="steer-bar-fill" id="touch-steer-indicator"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom-Center: Compact Telemetry & Camera Cycle Button -->
+        <div id="mobile-center-hud">
+          <div id="mobile-telemetry-bar">
+            <div class="mobile-gear-badge" id="mobile-gear">1</div>
+            <div class="mobile-speed-group">
+              <div class="mobile-speed-row">
+                <span class="mobile-speed-val" id="mobile-speed">0</span>
+                <span class="mobile-speed-unit">KM/H</span>
+              </div>
+              <div class="mobile-rpm-track">
+                <div class="mobile-rpm-fill" id="mobile-rpm-fill"></div>
+              </div>
+            </div>
+          </div>
+          <button id="btn-mobile-cam" type="button" aria-label="Cambiar cámara">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <span id="mobile-cam-label">3.ª PERS.</span>
+          </button>
+        </div>
+
+        <!-- Bottom-Right: Look-Around Joystick + Shift Paddles + Brake/Accelerator Pedals -->
+        <div id="mobile-right-controls">
+          <div id="touch-look-zone">
+            <div id="touch-look-pad" aria-label="Mirar alrededor">
+              <span class="look-dir dir-l">◀</span>
+              <span class="look-dir dir-u">▲</span>
+              <span class="look-dir dir-d">▼</span>
+              <span class="look-dir dir-r">▶</span>
+              <div id="touch-look-puck">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div id="mobile-drive-stack">
+            <div id="touch-shifters">
+              <button class="mobile-paddle down" id="btn-mobile-shift-down" type="button" aria-label="Bajar cambio">
+                <span class="paddle-sym">−</span>
+                <span class="paddle-lbl">BAJAR</span>
+              </button>
+              <button class="mobile-paddle up" id="btn-mobile-shift-up" type="button" aria-label="Subir cambio">
+                <span class="paddle-sym">+</span>
+                <span class="paddle-lbl">SUBIR</span>
+              </button>
+            </div>
+            <div id="touch-pedals">
+              <button class="mobile-pedal brake" id="btn-mobile-brake" type="button" aria-label="Freno">
+                <span class="pedal-tag">FRENO</span>
+              </button>
+              <button class="mobile-pedal gas" id="btn-mobile-gas" type="button" aria-label="Acelerador">
+                <span class="pedal-tag">ACEL</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Garage & Circuit Menu Overlay -->
@@ -155,6 +247,14 @@
             <div class="arg-stripe white"><div class="arg-sun"></div></div>
             <div class="arg-stripe"></div>
           </div>
+        </div>
+
+        <div id="mobile-menu-fs-bar">
+          <div class="mobile-fs-info">
+            <span id="mobile-fs-bar-text">Para jugar sin barra del navegador, activá pantalla completa</span>
+            <span id="mobile-ios-fs-hint">En iPhone, tocá Compartir → "Agregar a inicio" para jugar sin barras</span>
+          </div>
+          <button type="button" class="mobile-fs-action" id="btn-menu-fullscreen">⛶ PANTALLA COMPLETA</button>
         </div>
 
         <div class="menu-grid">
@@ -257,13 +357,43 @@
         </div>
 
         <div class="menu-footer">
-          <div class="controls-summary">
+          <div class="controls-summary desktop-only">
             <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> Acelerar, frenar y doblar &nbsp;|&nbsp; <kbd>E</kbd> / <kbd>SHIFT</kbd> Subir cambio &nbsp;|&nbsp; <kbd>Q</kbd> / <kbd>CTRL</kbd> Bajar cambio</div>
             <div><kbd>C</kbd> Cambiar cámara (Cabina / 3.ª persona) &nbsp;|&nbsp; <kbd>ESPACIO</kbd> Freno de mano &nbsp;|&nbsp; <kbd>V</kbd>/<kbd>B</kbd>/<kbd>N</kbd> Mirar Izq. / Atrás / Der. &nbsp;|&nbsp; <kbd>R</kbd> Reiniciar</div>
+          </div>
+          <div class="controls-summary mobile-only">
+            Volante izq. para doblar &bull; Pedales der. para acelerar/frenar &bull; Levas &minus;/+ para cambios &bull; Joystick der. para mirar alrededor
           </div>
           <button class="start-race-btn" id="btn-start-race">
             SALIR A PISTA EN EL GÁLVEZ ▶
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Landscape Rotation Overlay -->
+    <div id="mobile-rotate-overlay" class="hidden" aria-live="polite">
+      <div class="mobile-overlay-card">
+        <div class="rotate-phone-anim" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="18" y="8" width="28" height="48" rx="5" fill="rgba(0, 176, 240, 0.14)" stroke="#00b0f0" />
+            <line x1="28" y1="49" x2="36" y2="49" stroke="#ffd100" />
+          </svg>
+        </div>
+        <h2>GIRÁ EL CELULAR EN HORIZONTAL</h2>
+        <p>Poné el teléfono de costado para salir a pista en El Gálvez</p>
+        <button type="button" class="mobile-overlay-btn" id="btn-rotate-fullscreen">⛶ ACTIVAR PANTALLA COMPLETA</button>
+      </div>
+    </div>
+
+    <!-- Mobile Fullscreen Prompt Modal -->
+    <div id="mobile-fs-prompt" class="hidden" role="dialog" aria-modal="true" aria-labelledby="fs-prompt-title">
+      <div class="mobile-overlay-card">
+        <h2 id="fs-prompt-title">PANTALLA COMPLETA</h2>
+        <p>Ocultá la barra del navegador para disfrutar la pista completa</p>
+        <div class="mobile-overlay-actions">
+          <button type="button" class="mobile-overlay-btn primary" id="btn-fs-accept">ACTIVAR PANTALLA COMPLETA</button>
+          <button type="button" class="mobile-overlay-btn secondary" id="btn-fs-dismiss">CONTINUAR ASÍ</button>
         </div>
       </div>
     </div>
@@ -278,6 +408,7 @@
   <script src="js/car.js"></script>
   <script src="js/peugeot208.js"></script>
   <script src="js/physics.js"></script>
+  <script src="js/mobile.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

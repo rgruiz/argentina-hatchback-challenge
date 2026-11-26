@@ -233,17 +233,18 @@
   // 2: Hood / Bonnet Cam
   // 3: Far Arcade Chase Cam
   const CAMERA_MODES = [
-    { name: '3.ª PERSONA', fov: 58 },
-    { name: 'CABINA INTERIOR', fov: 72 },
-    { name: 'CAPOT', fov: 62 },
-    { name: 'PERSECUCIÓN LEJANA', fov: 64 }
+    { name: '3.ª PERSONA', shortName: '3.ª PERS.', fov: 58 },
+    { name: 'CABINA INTERIOR', shortName: 'CABINA', fov: 72 },
+    { name: 'CAPOT', shortName: 'CAPOT', fov: 62 },
+    { name: 'PERSECUCIÓN LEJANA', shortName: 'LEJANA', fov: 64 }
   ];
   let cameraMode = 0;
 
-  // Smooth Chase Camera State
+  // Smooth Chase Camera & Look-Around State
   const camWorldPos = new THREE.Vector3();
   const camLookTarget = new THREE.Vector3();
   let chaseCamHeading = physics.heading;
+  let smoothLookYaw = 0;
 
   // --- Input State ---
   const inputs = {
@@ -260,6 +261,38 @@
   let inMenu = true;
   let raceCanDrive = true;
   let countdownTimers = [];
+  let pendingStartAfterRotate = false;
+
+  // --- Mobile Touch Controls & Orientation / Fullscreen Manager ---
+  function resizeRenderer() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  const mobileControls = new MobileControls({
+    onUserInteract: () => sound.init(),
+    onShiftUp: () => {
+      sound.init();
+      physics.manualShiftUp();
+    },
+    onShiftDown: () => {
+      sound.init();
+      physics.manualShiftDown();
+    },
+    onCycleCamera: () => {
+      sound.init();
+      setCameraMode(cameraMode + 1);
+    },
+    onPortraitCleared: () => {
+      resizeRenderer();
+      setTimeout(resizeRenderer, 140);
+      if (pendingStartAfterRotate && !inMenu) {
+        pendingStartAfterRotate = false;
+        triggerStartLightsCountdown();
+      }
+    }
+  });
 
   // --- Format Helper (MM:SS.mmm) ---
   function formatTime(sec) {
@@ -409,6 +442,7 @@
     } else if (code === 'Escape' && !e.repeat) {
       inMenu = !inMenu;
       menuOverlay.classList.toggle('hidden', !inMenu);
+      mobileControls.syncState(inMenu);
     }
   });
 
@@ -445,6 +479,7 @@
 
   btnReset.addEventListener('click', () => {
     sound.init();
+    mobileControls.resetTouchInputs();
     setupSessionAndGrid();
     chaseCamHeading = physics.heading;
     triggerStartLightsCountdown();
@@ -461,6 +496,7 @@
   btnMenu.addEventListener('click', () => {
     inMenu = !inMenu;
     menuOverlay.classList.toggle('hidden', !inMenu);
+    mobileControls.syncState(inMenu);
     btnMenu.blur();
   });
 
@@ -570,17 +606,55 @@
 
   btnStartRace.addEventListener('click', () => {
     sound.init();
+    if (mobileControls.enabled) {
+      mobileControls.requestFullscreenAndLandscape();
+    }
     inMenu = false;
     menuOverlay.classList.add('hidden');
     setupSessionAndGrid();
     chaseCamHeading = physics.heading;
-    triggerStartLightsCountdown();
+    mobileControls.syncState(false);
+
+    if (mobileControls.enabled && mobileControls.pausedForOrientation) {
+      pendingStartAfterRotate = true;
+    } else {
+      pendingStartAfterRotate = false;
+      triggerStartLightsCountdown();
+    }
   });
 
   // --- Camera Update Logic ---
   function updateCamera(dt) {
     car.root.updateMatrixWorld(true);
     car.chassisGroup.updateMatrixWorld(true);
+
+    let targetLookYaw = 0;
+    let snapLook = false;
+    if (mobileControls.enabled && mobileControls.lookActive) {
+      targetLookYaw = Math.atan2(-mobileControls.lookX, -mobileControls.lookY);
+    } else if (inputs.lookBack) {
+      targetLookYaw = Math.PI;
+      snapLook = true;
+    } else if (inputs.lookLeft) {
+      targetLookYaw = Math.PI / 2;
+      snapLook = true;
+    } else if (inputs.lookRight) {
+      targetLookYaw = -Math.PI / 2;
+      snapLook = true;
+    }
+
+    if (snapLook) {
+      smoothLookYaw = targetLookYaw;
+    } else {
+      let yawDelta = targetLookYaw - smoothLookYaw;
+      while (yawDelta > Math.PI) yawDelta -= Math.PI * 2;
+      while (yawDelta < -Math.PI) yawDelta += Math.PI * 2;
+      smoothLookYaw += yawDelta * Math.min(1, dt * 13);
+      if (targetLookYaw === 0 && Math.abs(smoothLookYaw) < 0.005) {
+        smoothLookYaw = 0;
+      }
+    }
+    const isLookingOffset = Math.abs(smoothLookYaw) > 0.005;
 
     if (cameraMode === 1) {
       // ====================================================================
@@ -604,12 +678,12 @@
       );
 
       const localTarget = new THREE.Vector3();
-      if (inputs.lookBack) {
-        localTarget.set(0.35, 0.90, -10.0);
-      } else if (inputs.lookLeft) {
-        localTarget.set(6.0, 0.96, 0.15);
-      } else if (inputs.lookRight) {
-        localTarget.set(-6.0, 0.92, 0.25);
+      if (isLookingOffset) {
+        localTarget.set(
+          0.35 + Math.sin(smoothLookYaw) * 8.0,
+          0.93,
+          eyeZ + Math.cos(smoothLookYaw) * 8.0
+        );
       } else {
         localTarget.set(0.26 - physics.steerAngle * 0.65, targetY, 6.0);
       }
@@ -628,12 +702,12 @@
       // ====================================================================
       const localHood = new THREE.Vector3(0, 1.04, 0.88);
       const localTarget = new THREE.Vector3();
-      if (inputs.lookBack) {
-        localTarget.set(0, 0.86, -12.0);
-      } else if (inputs.lookLeft) {
-        localTarget.set(12.0, 0.88, 1.5);
-      } else if (inputs.lookRight) {
-        localTarget.set(-12.0, 0.88, 1.5);
+      if (isLookingOffset) {
+        localTarget.set(
+          Math.sin(smoothLookYaw) * 12.0,
+          0.88,
+          0.88 + Math.cos(smoothLookYaw) * 12.0
+        );
       } else {
         localTarget.set(-physics.steerAngle * 1.2, 0.86, 14.0);
       }
@@ -657,28 +731,21 @@
     while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
     chaseCamHeading += angleDiff * Math.min(1, dt * 7.5);
 
-    const anyLookOffset = inputs.lookBack || inputs.lookLeft || inputs.lookRight;
-    let effectiveHeading = chaseCamHeading;
-    if (inputs.lookBack) effectiveHeading = physics.heading + Math.PI;
-    else if (inputs.lookLeft) effectiveHeading = physics.heading + Math.PI / 2;
-    else if (inputs.lookRight) effectiveHeading = physics.heading - Math.PI / 2;
-
+    const effectiveHeading = (isLookingOffset ? physics.heading : chaseCamHeading) + smoothLookYaw;
     const dynamicDist = baseDist + (physics.speedKmh / 210) * 0.65;
 
     const targetCamX = physics.x - Math.sin(effectiveHeading) * dynamicDist;
     const targetCamZ = physics.z - Math.cos(effectiveHeading) * dynamicDist;
     const targetCamY = physics.y + baseHeight;
 
-    if (anyLookOffset) {
+    if (isLookingOffset) {
       camera.position.set(targetCamX, targetCamY, targetCamZ);
     } else {
       camWorldPos.set(targetCamX, targetCamY, targetCamZ);
       camera.position.lerp(camWorldPos, Math.min(1, dt * 14));
     }
 
-    let lookAheadDist = 2.8;
-    if (inputs.lookBack) lookAheadDist = -4.0;
-    else if (inputs.lookLeft || inputs.lookRight) lookAheadDist = 0.0;
+    const lookAheadDist = isLookingOffset ? (2.8 * Math.cos(smoothLookYaw)) : 2.8;
 
     camLookTarget.set(
       physics.x + Math.sin(physics.heading) * lookAheadDist,
@@ -987,6 +1054,18 @@
     drawHudTachometer(physics.rpm, physics.speedKmh);
     drawMinimap();
 
+    if (mobileControls.enabled) {
+      const rpmRatio = Math.min(1, physics.rpm / Math.max(1000, physics.redlineRpm));
+      const shiftAlert = physics.rpm > (physics.redlineRpm - 250) && physics.gear < 5;
+      mobileControls.updateHudReadout(
+        gearStr,
+        speedInt,
+        rpmRatio,
+        shiftAlert,
+        CAMERA_MODES[cameraMode].shortName
+      );
+    }
+
     // Also update the 3D Cockpit Instrument Cluster & Infotainment Screen inside the car!
     car.updateCockpitDisplays(
       physics.speedKmh,
@@ -998,10 +1077,10 @@
   }
 
   // --- Window Resize ---
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+  window.addEventListener('resize', resizeRenderer);
+  window.addEventListener('orientationchange', () => {
+    resizeRenderer();
+    setTimeout(resizeRenderer, 140);
   });
 
   // --- Main Animation Loop ---
@@ -1026,11 +1105,22 @@
         physics.z + Math.cos(orbitAngle) * 5.2
       );
       camera.lookAt(physics.x, physics.y + 0.78, physics.z);
+    } else if (mobileControls.enabled && mobileControls.pausedForOrientation) {
+      // Keep scene rendered cleanly behind portrait rotation prompt while paused
+      updateCamera(dt);
     } else {
       const activeAIs = getActiveAIs();
       const allPhysics = [physics, ...activeAIs.map(a => a.physics)];
+      const frameInputs = {
+        up: inputs.up || mobileControls.throttle,
+        down: inputs.down || mobileControls.brake,
+        left: inputs.left,
+        right: inputs.right,
+        handbrake: inputs.handbrake,
+        steer: mobileControls.steerActive ? mobileControls.steerValue : undefined
+      };
 
-      physics.update(dt, inputs, raceCanDrive, allPhysics);
+      physics.update(dt, frameInputs, raceCanDrive, allPhysics);
       activeAIs.forEach(ai => {
         ai.controller.update(dt, raceCanDrive, allPhysics);
       });
@@ -1063,7 +1153,9 @@
               : `🏁 FINALIZASTE P${playerPos} / ${standings.length}`;
           }
           if (finishSubEl) {
-            finishSubEl.textContent = `Tiempo: ${totalTimeStr} • Presioná R para revancha o ESC para el taller`;
+            finishSubEl.textContent = mobileControls.enabled
+              ? `Tiempo: ${totalTimeStr} • Tocá REINICIAR para revancha o TALLER / PISTA para volver`
+              : `Tiempo: ${totalTimeStr} • Presioná R para revancha o ESC para el taller`;
           }
           raceFinishBanner.classList.remove('hidden');
         }

@@ -918,3 +918,785 @@ body.cockpit-active .minimap-panel {
     height: 135px;
   }
 }
+
+/* ==========================================================================
+   MOBILE TOUCH CONTROLS, LANDSCAPE PROMPT & RESPONSIVE HUD
+   ========================================================================== */
+
+#mobile-controls,
+#mobile-rotate-overlay,
+#mobile-fs-prompt,
+.mobile-only-btn,
+.mobile-only,
+#mobile-menu-fs-bar {
+  display: none;
+}
+
+#mobile-rotate-overlay.hidden,
+#mobile-fs-prompt.hidden,
+#mobile-menu-fs-bar.hidden,
+#btn-fullscreen.hidden,
+#btn-rotate-fullscreen.hidden {
+  display: none !important;
+}
+
+body.mobile-mode,
+body.mobile-mode #game-container {
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.mobile-mode .menu-card {
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide all desktop keyboard helpers & redundant desktop HUD widgets on mobile */
+body.mobile-mode .controls-legend,
+body.mobile-mode .controls-summary.desktop-only,
+body.mobile-mode .key-hint,
+body.mobile-mode #btn-camera,
+body.mobile-mode #btn-shift-down,
+body.mobile-mode #btn-shift-up,
+body.mobile-mode .gauge-cluster {
+  display: none !important;
+}
+
+body.mobile-mode .mobile-only-btn {
+  display: inline-flex;
+}
+
+body.mobile-mode .controls-summary.mobile-only {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+}
+
+/* Mobile Menu Fullscreen Banner */
+body.mobile-mode #mobile-menu-fs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(0, 176, 240, 0.14);
+  border: 1px solid rgba(0, 176, 240, 0.45);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 11px;
+  color: #e2e8f0;
+}
+
+body.mobile-mode #mobile-ios-fs-hint {
+  display: none;
+  color: var(--racing-yellow);
+  font-weight: 700;
+}
+
+body.mobile-mode .mobile-fs-action {
+  background: linear-gradient(135deg, #001e50, #0077b6);
+  color: #ffffff;
+  border: 1.5px solid var(--racing-yellow);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Mobile Menu Sizing (works smoothly in both Portrait & Landscape) */
+body.mobile-mode #menu-overlay {
+  padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+}
+
+body.mobile-mode .menu-card {
+  width: 100%;
+  max-height: 95dvh;
+  padding: 14px 16px;
+}
+
+body.mobile-mode .title-block h1 {
+  font-size: 20px;
+}
+
+body.mobile-mode .title-block p {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+body.mobile-mode .arg-flag-pill {
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+body.mobile-mode .menu-footer {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+body.mobile-mode .start-race-btn {
+  width: 100%;
+  padding: 12px 18px;
+  font-size: 15px;
+  transform: none;
+}
+
+@media (orientation: landscape) {
+  body.mobile-mode .menu-grid {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+}
+
+/* Mobile Racing HUD Top Bar Adjustments */
+body.mobile-mode #hud {
+  padding: max(8px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+}
+
+body.mobile-mode .timing-panel {
+  min-width: 162px;
+  padding: 5px 10px;
+  transform: skewX(-4deg);
+}
+
+body.mobile-mode .timing-panel > * {
+  transform: skewX(4deg);
+}
+
+body.mobile-mode .track-badge {
+  font-size: 9px;
+  letter-spacing: 0.6px;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+body.mobile-mode #hud-circuit-name {
+  display: none;
+}
+
+body.mobile-mode .time-row {
+  margin: 1px 0;
+}
+
+body.mobile-mode .time-label {
+  font-size: 9px;
+}
+
+body.mobile-mode .time-value {
+  font-size: 14px;
+}
+
+body.mobile-mode .time-value.last,
+body.mobile-mode .timing-panel .time-row:nth-of-type(3) {
+  display: none;
+}
+
+body.mobile-mode .sectors-row {
+  margin-top: 3px;
+  padding-top: 3px;
+  gap: 4px;
+}
+
+body.mobile-mode .sector-pill {
+  font-size: 8.5px;
+  padding: 1px 3px;
+}
+
+body.mobile-mode .race-standings {
+  margin-top: 4px;
+  padding-top: 4px;
+  gap: 2px;
+}
+
+body.mobile-mode .standing-row {
+  font-size: 9px;
+  padding: 1px 4px;
+}
+
+body.mobile-mode .corner-banner {
+  padding: 3px 16px;
+}
+
+body.mobile-mode .corner-banner .corner-sub {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+}
+
+body.mobile-mode .corner-banner .corner-name {
+  font-size: 13px;
+}
+
+body.mobile-mode .offtrack-warning {
+  font-size: 10px;
+  padding: 2px 10px;
+}
+
+body.mobile-mode .start-lights {
+  padding: 5px 10px;
+  gap: 6px;
+}
+
+body.mobile-mode .light-bulb {
+  width: 15px;
+  height: 15px;
+}
+
+body.mobile-mode .control-buttons {
+  flex-wrap: nowrap;
+  gap: 5px;
+}
+
+body.mobile-mode .hud-btn {
+  padding: 4px 7px;
+  font-size: 9.5px;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  transform: skewX(-4deg);
+}
+
+body.mobile-mode .minimap-panel {
+  position: fixed;
+  top: calc(40px + env(safe-area-inset-top));
+  right: calc(12px + env(safe-area-inset-right));
+  width: 96px;
+  height: 82px;
+  padding: 4px;
+  opacity: 0.84;
+}
+
+body.mobile-mode .minimap-title {
+  font-size: 8px;
+  top: 3px;
+  left: 6px;
+}
+
+/* ==========================================================================
+   MOBILE RACING TOUCH CONTROLS LAYER
+   ========================================================================== */
+
+body.mobile-mode.mobile-racing #mobile-controls {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  pointer-events: none;
+}
+
+/* 1. Translucent Steering Wheel Joystick (Bottom-Left) */
+#touch-steer-zone {
+  position: fixed;
+  left: calc(16px + env(safe-area-inset-left));
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  width: 146px;
+  height: 146px;
+  pointer-events: auto;
+}
+
+#touch-steer-pad {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(8, 14, 28, 0.36) 0%, rgba(8, 14, 28, 0.62) 100%);
+  border: 2px solid rgba(0, 176, 240, 0.42);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42), inset 0 0 18px rgba(0, 176, 240, 0.14);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  touch-action: none;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+#touch-steer-pad.active {
+  border-color: var(--racing-yellow);
+  box-shadow: 0 8px 28px rgba(0, 176, 240, 0.35), inset 0 0 22px rgba(255, 209, 0, 0.18);
+}
+
+#touch-steer-wheel {
+  width: 78%;
+  height: 78%;
+  opacity: 0.78;
+  transition: transform 0.06s ease-out, opacity 0.12s ease;
+  pointer-events: none;
+}
+
+#touch-steer-pad.active #touch-steer-wheel {
+  opacity: 0.96;
+  transition: opacity 0.08s ease;
+}
+
+.steer-ticks {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7px;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+
+.steer-bar-track {
+  position: absolute;
+  bottom: 8px;
+  left: 22%;
+  right: 22%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 3px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.steer-bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 0%;
+  background: var(--racing-yellow);
+}
+
+/* 2. Bottom-Center Compact Telemetry & Camera Switcher */
+#mobile-center-hud {
+  position: fixed;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+#mobile-telemetry-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(8, 14, 28, 0.7);
+  border: 1.5px solid rgba(0, 176, 240, 0.45);
+  border-radius: 8px;
+  padding: 4px 10px;
+  backdrop-filter: blur(4px);
+}
+
+.mobile-gear-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  background: #050a14;
+  border: 1.5px solid var(--vw-light-blue);
+  color: var(--racing-yellow);
+  font-family: 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-gear-badge.shift-up {
+  border-color: var(--racing-red);
+  color: var(--racing-red);
+  animation: pulseShift 0.18s infinite alternate;
+}
+
+.mobile-speed-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 72px;
+  gap: 3px;
+}
+
+.mobile-speed-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.mobile-speed-val {
+  font-size: 20px;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.mobile-speed-unit {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--arg-blue);
+}
+
+.mobile-rpm-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mobile-rpm-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #00b0f0, #22c55e, #ffd100);
+}
+
+.mobile-rpm-fill.redline {
+  background: linear-gradient(90deg, #f97316, #ef4444);
+}
+
+#btn-mobile-cam {
+  pointer-events: auto;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(8, 14, 28, 0.72);
+  color: #f8fafc;
+  border: 1.5px solid rgba(255, 209, 0, 0.65);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+#btn-mobile-cam:active {
+  transform: scale(0.95);
+  background: rgba(0, 176, 240, 0.35);
+}
+
+/* 3. Right-Side Look Joystick, Shift Paddles & Pedals */
+#mobile-right-controls {
+  position: fixed;
+  right: calc(14px + env(safe-area-inset-right));
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  pointer-events: none;
+}
+
+/* Look-Around Joystick */
+#touch-look-zone {
+  width: 78px;
+  height: 78px;
+  margin-bottom: 10px;
+  pointer-events: auto;
+}
+
+#touch-look-pad {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(8, 14, 28, 0.48);
+  border: 1.5px solid rgba(116, 172, 223, 0.52);
+  backdrop-filter: blur(4px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+#touch-look-pad.active {
+  border-color: var(--racing-yellow);
+  background: rgba(8, 14, 28, 0.68);
+}
+
+.look-dir {
+  position: absolute;
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.42);
+  pointer-events: none;
+}
+.look-dir.dir-l { left: 5px; top: 50%; transform: translateY(-50%); }
+.look-dir.dir-r { right: 5px; top: 50%; transform: translateY(-50%); }
+.look-dir.dir-u { top: 4px; left: 50%; transform: translateX(-50%); }
+.look-dir.dir-d { bottom: 4px; left: 50%; transform: translateX(-50%); }
+
+#touch-look-puck {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 176, 240, 0.38);
+  border: 1.5px solid rgba(255, 255, 255, 0.82);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 176, 240, 0.45);
+  pointer-events: none;
+  transition: transform 0.08s ease-out;
+}
+
+#touch-look-pad.active #touch-look-puck {
+  transition: none;
+  background: rgba(255, 209, 0, 0.42);
+  border-color: var(--racing-yellow);
+}
+
+/* Pedals + Shift Paddles Stack */
+#mobile-drive-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+}
+
+#touch-shifters {
+  display: flex;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.mobile-paddle {
+  pointer-events: auto;
+  touch-action: none;
+  width: 60px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(148, 163, 184, 0.55);
+  background: linear-gradient(160deg, rgba(30, 41, 59, 0.72), rgba(10, 18, 34, 0.82));
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transform: skewX(-6deg);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.mobile-paddle .paddle-sym {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--vw-light-blue);
+}
+
+.mobile-paddle.up .paddle-sym {
+  color: var(--racing-yellow);
+}
+
+.mobile-paddle .paddle-lbl {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: #cbd5e1;
+}
+
+.mobile-paddle.pressed {
+  transform: skewX(-6deg) scale(0.93);
+  border-color: #ffffff;
+  background: rgba(0, 176, 240, 0.38);
+}
+
+.mobile-paddle.up.shift-up {
+  border-color: var(--racing-red);
+  box-shadow: 0 0 14px rgba(230, 36, 41, 0.75);
+}
+
+#touch-pedals {
+  display: flex;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.mobile-pedal {
+  pointer-events: auto;
+  touch-action: none;
+  width: 60px;
+  height: 94px;
+  border-radius: 10px 10px 7px 7px;
+  background-color: rgba(10, 18, 34, 0.62);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.08) 0px,
+    rgba(255, 255, 255, 0.08) 3px,
+    transparent 3px,
+    transparent 10px
+  );
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+  transition: transform 0.06s ease, background-color 0.08s ease;
+}
+
+.mobile-pedal.brake {
+  border: 2px solid rgba(239, 68, 68, 0.72);
+  color: #fca5a5;
+}
+
+.mobile-pedal.gas {
+  border: 2px solid rgba(34, 197, 94, 0.72);
+  color: #86efac;
+}
+
+.pedal-tag {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.9px;
+}
+
+.mobile-pedal.pressed {
+  transform: translateY(3px) scale(0.95);
+}
+
+.mobile-pedal.brake.pressed {
+  background-color: rgba(239, 68, 68, 0.38);
+  border-color: #ffffff;
+}
+
+.mobile-pedal.gas.pressed {
+  background-color: rgba(34, 197, 94, 0.36);
+  border-color: #ffffff;
+}
+
+@media (max-width: 720px), (max-height: 390px) {
+  body.mobile-mode .timing-panel {
+    min-width: 146px;
+    padding: 4px 8px;
+  }
+  body.mobile-mode .corner-banner {
+    padding: 2px 10px;
+  }
+  body.mobile-mode .hud-btn {
+    padding: 4px 6px;
+    font-size: 9px;
+  }
+  #touch-steer-zone {
+    width: 126px;
+    height: 126px;
+    left: calc(10px + env(safe-area-inset-left));
+    bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+  #mobile-right-controls {
+    right: calc(10px + env(safe-area-inset-right));
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    gap: 10px;
+  }
+  #touch-look-zone {
+    width: 68px;
+    height: 68px;
+    margin-bottom: 6px;
+  }
+  #touch-look-puck {
+    width: 30px;
+    height: 30px;
+  }
+  .mobile-paddle {
+    width: 54px;
+    height: 36px;
+  }
+  .mobile-pedal {
+    width: 54px;
+    height: 82px;
+  }
+}
+
+/* ==========================================================================
+   MOBILE ROTATE LANDSCAPE OVERLAY & FULLSCREEN PROMPT MODAL
+   ========================================================================== */
+
+body.mobile-mode #mobile-rotate-overlay,
+body.mobile-mode #mobile-fs-prompt {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(4, 9, 22, 0.9);
+  backdrop-filter: blur(8px);
+}
+
+body.mobile-mode #mobile-rotate-overlay {
+  z-index: 80;
+}
+
+body.mobile-mode #mobile-fs-prompt {
+  z-index: 75;
+}
+
+.mobile-overlay-card {
+  width: min(400px, 92vw);
+  background: rgba(10, 18, 38, 0.96);
+  border: 2px solid var(--vw-light-blue);
+  border-top: 5px solid var(--racing-yellow);
+  border-radius: 12px;
+  padding: 22px 20px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+}
+
+.mobile-overlay-card h2 {
+  font-size: 18px;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 1px;
+  color: var(--racing-yellow);
+  margin: 10px 0 6px;
+}
+
+.mobile-overlay-card p {
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.45;
+  margin-bottom: 16px;
+}
+
+.rotate-phone-anim {
+  display: inline-flex;
+  animation: rotatePhoneHint 2s ease-in-out infinite;
+}
+
+@keyframes rotatePhoneHint {
+  0%, 20% { transform: rotate(0deg); }
+  55%, 80% { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.mobile-overlay-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-overlay-btn {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 1.5px solid var(--racing-yellow);
+  background: linear-gradient(135deg, #e62429, #b91c1c);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+}
+
+.mobile-overlay-btn.secondary {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(148, 163, 184, 0.45);
+  color: #cbd5e1;
+}
