@@ -95,7 +95,7 @@
   // --- Core Game Modules ---
   const sound = new SoundEngine();
   const track = new BuenosAiresTrack(scene);
-  track.build('12');
+  track.build('8');
 
   const cars = {
     polo: new VWPoloTrackCar(scene),
@@ -128,7 +128,7 @@
         ['Tablero', 'Relojes analógicos + pantalla VW I-System'],
         ['Multimedia', 'Pantalla táctil VW Play 10,1" (MY25)'],
         ['Volante', 'Volante VW multifunción de 3 rayos'],
-        ['Curvas clásicas', 'S del Ciervo, Salotto, Ascari, Horquilla']
+        ['Curvas clásicas', 'Reutemann, Confitería, Ombú, Tobogán, Horquilla']
       ]
     },
     peugeot208: {
@@ -143,7 +143,7 @@
         ['Tablero', 'Peugeot i-Cockpit (tacómetro antihorario)'],
         ['Multimedia', 'Pantalla táctil 10" + teclas tipo piano'],
         ['Volante', 'Compacto i-Cockpit de 2 rayos achatado'],
-        ['Curvas clásicas', 'S del Ciervo, Salotto, Ascari, Horquilla']
+        ['Curvas clásicas', 'Reutemann, Confitería, Ombú, Tobogán, Horquilla']
       ]
     }
   };
@@ -527,6 +527,17 @@
     });
   }
 
+  function renderCarSpecs(carKey) {
+    const meta = CAR_SPECS_DATA[carKey];
+    if (!carSpecsList || !meta) return;
+    const corners = track.currentLayout === '8'
+      ? 'Reutemann, Confitería, Ombú, Tobogán, Horquilla'
+      : 'S del Ciervo, Salotto, Ascari, Horquilla';
+    carSpecsList.innerHTML = meta.specs
+      .map(([k, v]) => `<li><span>${k}</span><span>${k === 'Curvas clásicas' ? corners : v}</span></li>`)
+      .join('');
+  }
+
   function selectCar(carKey) {
     if (!cars[carKey]) return;
     activeCarKey = carKey;
@@ -543,11 +554,7 @@
     const meta = CAR_SPECS_DATA[carKey];
     if (hudCarBadge && meta) hudCarBadge.textContent = meta.hudBadge;
     if (colorLabel && meta) colorLabel.textContent = meta.colorTitle;
-    if (carSpecsList && meta) {
-      carSpecsList.innerHTML = meta.specs
-        .map(([k, v]) => `<li><span>${k}</span><span>${v}</span></li>`)
-        .join('');
-    }
+    renderCarSpecs(carKey);
 
     document.querySelectorAll('#car-selector .choice-btn').forEach(btn => {
       btn.classList.toggle('selected', btn.dataset.car === carKey);
@@ -586,6 +593,7 @@
       chaseCamHeading = physics.heading;
       hudCircuitName.textContent = `AUTÓDROMO BS. AS. — CIRCUITO N°${layout}`;
       minimapTitle.textContent = `EL GÁLVEZ N°${layout}`;
+      renderCarSpecs(activeCarKey);
       updateHUD();
     });
   });

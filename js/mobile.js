@@ -25,6 +25,7 @@ class MobileControls {
     this.brakePointers = new Set();
 
     // DOM elements
+    this.steerZone = document.getElementById('touch-steer-zone');
     this.steerPad = document.getElementById('touch-steer-pad');
     this.steerWheel = document.getElementById('touch-steer-wheel');
     this.steerIndicator = document.getElementById('touch-steer-indicator');
@@ -232,7 +233,7 @@ class MobileControls {
     if (!this.steerPad) return;
     const rect = this.steerPad.getBoundingClientRect();
     const cx = rect.left + rect.width * 0.5;
-    const maxR = Math.max(36, rect.width * 0.42);
+    const maxR = Math.max(46, rect.width * 0.42);
     const rawDx = Math.max(-1, Math.min(1, (clientX - cx) / maxR));
 
     const deadzone = 0.06;
@@ -295,20 +296,21 @@ class MobileControls {
       }
     };
 
-    // Steering wheel touch joystick
-    if (this.steerPad) {
-      this.steerPad.addEventListener('pointerdown', e => {
+    // Steering wheel touch joystick (bound to outer forgiving catch zone)
+    const steerTarget = this.steerZone || this.steerPad;
+    if (steerTarget && this.steerPad) {
+      steerTarget.addEventListener('pointerdown', e => {
         e.preventDefault();
         notifyInteract();
         if (this.steerPointerId !== null) return;
         this.steerPointerId = e.pointerId;
         this.steerActive = true;
         this.steerPad.classList.add('active');
-        try { this.steerPad.setPointerCapture(e.pointerId); } catch (_) {}
+        try { steerTarget.setPointerCapture(e.pointerId); } catch (_) {}
         this.updateSteerFromPointer(e.clientX);
       });
 
-      this.steerPad.addEventListener('pointermove', e => {
+      steerTarget.addEventListener('pointermove', e => {
         if (e.pointerId !== this.steerPointerId) return;
         e.preventDefault();
         this.updateSteerFromPointer(e.clientX);
@@ -316,7 +318,7 @@ class MobileControls {
 
       const endSteer = e => {
         if (e.pointerId !== this.steerPointerId) return;
-        try { this.steerPad.releasePointerCapture(e.pointerId); } catch (_) {}
+        try { steerTarget.releasePointerCapture(e.pointerId); } catch (_) {}
         this.steerPointerId = null;
         this.steerActive = false;
         this.steerValue = 0;
@@ -327,8 +329,8 @@ class MobileControls {
           this.steerIndicator.style.width = '0%';
         }
       };
-      this.steerPad.addEventListener('pointerup', endSteer);
-      this.steerPad.addEventListener('pointercancel', endSteer);
+      steerTarget.addEventListener('pointerup', endSteer);
+      steerTarget.addEventListener('pointercancel', endSteer);
     }
 
     // Accelerator & Brake pedals

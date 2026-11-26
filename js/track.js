@@ -13,7 +13,7 @@ class BuenosAiresTrack {
     this.samples = [];
     this.curve = null;
     this.totalLength = 0;
-    this.currentLayout = '12';
+    this.currentLayout = '8';
     this.sections = [];
     this.timeOfDay = 'day';
     this.emissiveCityMaterials = [];
@@ -61,7 +61,7 @@ class BuenosAiresTrack {
     }
   }
 
-  build(layoutId = '12') {
+  build(layoutId = '8') {
     this.currentLayout = String(layoutId);
     this.emissiveCityMaterials = [];
     this.floodlightLampMaterials = [];
