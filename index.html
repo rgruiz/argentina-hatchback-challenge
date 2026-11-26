@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Argentina Hatchback Challenge — Autódromo de Buenos Aires</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="retro-filter">
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+
+    <!-- 2000s Arcade Racing HUD -->
+    <div id="hud">
+      <div class="hud-top">
+        <!-- Left: Timing & Lap Telemetry -->
+        <div class="timing-panel">
+          <div class="track-badge">
+            <span id="hud-circuit-name">AUTÓDROMO BS. AS. — CIRCUITO N°12</span>
+            <span class="pos-badge" id="hud-pos">P2 / 2</span>
+            <span class="lap-counter" id="hud-lap">LAP 1 / 3</span>
+          </div>
+          <div class="time-row">
+            <span class="time-label">CURRENT</span>
+            <span class="time-value" id="hud-cur-time">00:00.000</span>
+          </div>
+          <div class="time-row">
+            <span class="time-label">BEST LAP</span>
+            <span class="time-value best" id="hud-best-time">--:--.---</span>
+          </div>
+          <div class="time-row">
+            <span class="time-label">LAST LAP</span>
+            <span class="time-value last" id="hud-last-time">--:--.---</span>
+          </div>
+          <div class="sectors-row">
+            <div class="sector-pill active" id="sec-1">S1: --.-</div>
+            <div class="sector-pill" id="sec-2">S2: --.-</div>
+            <div class="sector-pill" id="sec-3">S3: --.-</div>
+          </div>
+          <div class="race-standings" id="race-standings"></div>
+        </div>
+
+        <!-- Center: Sector / Corner Callout & Start Lights -->
+        <div class="center-hud">
+          <div class="start-lights" id="start-lights">
+            <div class="light-bulb" id="light-1"></div>
+            <div class="light-bulb" id="light-2"></div>
+            <div class="light-bulb" id="light-3"></div>
+            <div class="light-bulb" id="light-4"></div>
+            <div class="light-bulb" id="light-5"></div>
+          </div>
+
+          <div class="corner-banner" id="corner-banner">
+            <div class="corner-sub">AUTÓDROMO OSCAR Y JUAN GÁLVEZ</div>
+            <div class="corner-name" id="corner-name">RECTA PRINCIPAL</div>
+          </div>
+
+          <div class="offtrack-warning" id="offtrack-warning">
+            OFF TRACK — REDUCED GRIP
+          </div>
+
+          <div class="race-finish-banner hidden" id="race-finish-banner">
+            <div class="finish-title" id="finish-title">🏁 RACE FINISHED!</div>
+            <div class="finish-sub" id="finish-sub">Press R for Rematch or ESC for Garage</div>
+          </div>
+        </div>
+
+        <!-- Right: Camera Switcher & Quick Toggles -->
+        <div class="quick-controls">
+          <div class="control-buttons">
+            <button class="hud-btn active-cam" id="btn-camera" title="Switch Camera (C)">
+              <span id="cam-label">CAM: 3RD PERSON CHASE</span>
+              <span class="key-hint">C</span>
+            </button>
+            <button class="hud-btn" id="btn-shift-down" title="Shift Down (Q / Ctrl)">
+              <span>SHIFT −</span>
+              <span class="key-hint">Q</span>
+            </button>
+            <button class="hud-btn" id="btn-shift-up" title="Shift Up (E / Shift)">
+              <span>SHIFT +</span>
+              <span class="key-hint">E</span>
+            </button>
+            <button class="hud-btn" id="btn-reset" title="Reset Car to Track (R)">
+              <span>RESET</span>
+              <span class="key-hint">R</span>
+            </button>
+            <button class="hud-btn" id="btn-audio" title="Mute / Unmute Engine Sound">
+              <span id="audio-label">SOUND: ON</span>
+            </button>
+            <button class="hud-btn" id="btn-menu" title="Open Garage & Track Menu (ESC)">
+              <span>GARAGE / TRACK</span>
+              <span class="key-hint">ESC</span>
+            </button>
+          </div>
+          <div class="controls-legend">
+            <strong>W / ↑</strong> Throttle &nbsp;|&nbsp;
+            <strong>S / ↓</strong> Brake &nbsp;|&nbsp;
+            <strong>A D / ← →</strong> Steer &nbsp;|&nbsp;
+            <strong>E / SHIFT</strong> Gear + &nbsp;|&nbsp;
+            <strong>Q / CTRL</strong> Gear − &nbsp;|&nbsp;
+            <strong>V / B / N</strong> Look L / Back / R &nbsp;|&nbsp;
+            <strong>C</strong> Cam
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-bottom">
+        <!-- Bottom Left: Track Minimap -->
+        <div class="minimap-panel">
+          <div class="minimap-title" id="minimap-title">EL GÁLVEZ N°12</div>
+          <canvas id="minimap-canvas" width="210" height="185"></canvas>
+        </div>
+
+        <!-- Bottom Right: 2000s Tachometer, Gear & Digital Speed -->
+        <div class="gauge-cluster">
+          <canvas id="tach-canvas" width="160" height="160"></canvas>
+          <div class="digital-readout">
+            <div class="car-badge-hud" id="hud-car-badge">VW POLO TRACK 1.6</div>
+            <div class="gear-box">
+              <div class="gear-display" id="hud-gear">1</div>
+              <div class="trans-mode">
+                <div id="hud-trans-mode">MANUAL (Q/E)</div>
+                <div id="hud-rpm-text">850 RPM</div>
+              </div>
+            </div>
+            <div class="speed-box">
+              <div class="speed-value" id="hud-speed">0</div>
+              <div class="speed-unit">KM/H</div>
+            </div>
+            <div class="pedal-bars">
+              <div class="pedal-row">
+                <span>THR</span>
+                <div class="pedal-track"><div class="pedal-fill throttle" id="bar-throttle"></div></div>
+              </div>
+              <div class="pedal-row">
+                <span>BRK</span>
+                <div class="pedal-track"><div class="pedal-fill brake" id="bar-brake"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Garage & Circuit Menu Overlay -->
+    <div id="menu-overlay">
+      <div class="menu-card">
+        <div class="menu-header">
+          <div class="title-block">
+            <h1>ARGENTINA HATCHBACK CHALLENGE</h1>
+            <p>Autódromo Oscar y Juan Gálvez — Buenos Aires, Argentina</p>
+          </div>
+          <div class="arg-flag-pill" title="Buenos Aires, Argentina">
+            <div class="arg-stripe"></div>
+            <div class="arg-stripe white"><div class="arg-sun"></div></div>
+            <div class="arg-stripe"></div>
+          </div>
+        </div>
+
+        <div class="menu-grid">
+          <div class="menu-section">
+            <h3>1. Hatchback, Track &amp; Session Setup</h3>
+
+            <div class="option-group">
+              <span class="option-label">Session / Race Mode (Random AI Cars &amp; Same Physics)</span>
+              <div class="pill-selector" id="mode-selector">
+                <button class="choice-btn selected" data-mode="race1">
+                  1v1 Race (vs 1 AI • 3 Laps)
+                </button>
+                <button class="choice-btn" data-mode="race3">
+                  Grid Race (vs 3 AI • 3 Laps)
+                </button>
+                <button class="choice-btn" data-mode="practice">
+                  Solo Practice (Free Laps)
+                </button>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Select Stock Hatchback</span>
+              <div class="pill-selector" id="car-selector">
+                <button class="choice-btn selected" data-car="polo">
+                  VW Polo Track 1.6 MSI (110 CV)
+                </button>
+                <button class="choice-btn" data-car="peugeot208">
+                  Peugeot 208 Like MT 1.3 8V (96 CV)
+                </button>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Autódromo de Buenos Aires Layout</span>
+              <div class="pill-selector" id="layout-selector">
+                <button class="choice-btn selected" data-layout="12">
+                  Circuito N° 12 (Salotto + Ascari)
+                </button>
+                <button class="choice-btn" data-layout="8">
+                  Circuito N° 8 (Confitería + Tobogán)
+                </button>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Starting Camera View (Switch anytime with C)</span>
+              <div class="pill-selector" id="camera-selector">
+                <button class="choice-btn selected" data-cam="0">
+                  3rd Person Exterior
+                </button>
+                <button class="choice-btn" data-cam="1">
+                  3D Cockpit Interior
+                </button>
+                <button class="choice-btn" data-cam="2">
+                  Hood / Bonnet Cam
+                </button>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label" id="color-label">Factory Dealership Paint</span>
+              <div class="color-swatches" id="color-selector">
+                <button class="color-swatch selected" data-color="silver">
+                  <span class="swatch-dot" style="background: #b4bec8;"></span>
+                  Plata Sirius
+                </button>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Time of Day &amp; 2000s Visuals</span>
+              <div class="pill-selector" id="weather-selector">
+                <button class="choice-btn selected" data-time="day">
+                  Sunny Porteño Afternoon
+                </button>
+                <button class="choice-btn" data-time="sunset">
+                  Golden Hour Sunset
+                </button>
+                <button class="choice-btn" data-time="dusk">
+                  Twilight Floodlights
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="menu-section">
+            <h3>2. Stock Dealership Specs &amp; Circuit Data</h3>
+            <ul class="car-specs-list" id="car-specs-list">
+              <li><span>Vehicle</span><span>Volkswagen Polo Track MY25 (Mk6)</span></li>
+              <li><span>Engine</span><span>1.6L MSI 16V (110 CV / 155 Nm)</span></li>
+              <li><span>Transmission</span><span>5-Speed Manual Only (Q / E Shift)</span></li>
+              <li><span>0–100 km/h / Top</span><span>10.6 sec / 190 km/h (Stock Spec)</span></li>
+              <li><span>Instrument Cluster</span><span>Analog Dials + VW I-System LCD</span></li>
+              <li><span>Infotainment</span><span>10.1" VW Play Touchscreen (MY25)</span></li>
+              <li><span>Steering Wheel</span><span>Stock 3-Spoke VW Multifunction</span></li>
+              <li><span>Famous Corners</span><span>S del Ciervo, Salotto, Ascari, Horquilla</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="menu-footer">
+          <div class="controls-summary">
+            <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> Drive &amp; Steer &nbsp;|&nbsp; <kbd>E</kbd> / <kbd>SHIFT</kbd> Shift Up &nbsp;|&nbsp; <kbd>Q</kbd> / <kbd>CTRL</kbd> Shift Down</div>
+            <div><kbd>C</kbd> Change Camera (Cockpit / 3rd Person) &nbsp;|&nbsp; <kbd>SPACE</kbd> Handbrake &nbsp;|&nbsp; <kbd>V</kbd>/<kbd>B</kbd>/<kbd>N</kbd> Look Left / Back / Right &nbsp;|&nbsp; <kbd>R</kbd> Reset</div>
+          </div>
+          <button class="start-race-btn" id="btn-start-race">
+            DRIVE EL GÁLVEZ ▶
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+  <!-- Game Modules -->
+  <script src="js/audio.js"></script>
+  <script src="js/track.js"></script>
+  <script src="js/car-cad.js"></script>
+  <script src="js/car.js"></script>
+  <script src="js/peugeot208.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
