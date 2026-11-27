@@ -1445,22 +1445,26 @@ body.mobile-mode.mobile-racing #mobile-controls {
   background: rgba(0, 176, 240, 0.35);
 }
 
-/* 3. Right-Side Look Joystick, Shift Paddles & Pedals */
+/* 3. Right-Side Look Joystick (above) + Shift Paddles & Pedals */
 #mobile-right-controls {
   position: fixed;
-  right: calc(14px + env(safe-area-inset-right));
-  bottom: calc(12px + env(safe-area-inset-bottom));
+  right: calc(12px + env(safe-area-inset-right));
+  bottom: calc(10px + env(safe-area-inset-bottom));
   display: flex;
-  align-items: flex-end;
-  gap: 14px;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, 1.8vh, 10px);
+  gap: clamp(6px, 1.8dvh, 10px);
   pointer-events: none;
 }
 
 /* Look-Around Joystick */
 #touch-look-zone {
-  width: 78px;
-  height: 78px;
-  margin-bottom: 10px;
+  width: clamp(62px, 16.5vh, 76px);
+  height: clamp(62px, 16.5vh, 76px);
+  width: clamp(62px, 16.5dvh, 76px);
+  height: clamp(62px, 16.5dvh, 76px);
+  margin-bottom: 0;
   pointer-events: auto;
 }
 
@@ -1496,8 +1500,8 @@ body.mobile-mode.mobile-racing #mobile-controls {
 .look-dir.dir-d { bottom: 4px; left: 50%; transform: translateX(-50%); }
 
 #touch-look-puck {
-  width: 34px;
-  height: 34px;
+  width: 44%;
+  height: 44%;
   border-radius: 50%;
   background: rgba(0, 176, 240, 0.38);
   border: 1.5px solid rgba(255, 255, 255, 0.82);
@@ -1520,22 +1524,26 @@ body.mobile-mode.mobile-racing #mobile-controls {
 #mobile-drive-stack {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
+  align-items: center;
+  gap: clamp(8px, 2.2vh, 12px);
+  gap: clamp(8px, 2.2dvh, 12px);
   pointer-events: none;
 }
 
 #touch-shifters {
   display: flex;
-  gap: 10px;
+  gap: clamp(16px, 2.5vw, 24px);
+  gap: clamp(16px, 2.5dvw, 24px);
   pointer-events: none;
 }
 
 .mobile-paddle {
   pointer-events: auto;
   touch-action: none;
-  width: 60px;
-  height: 40px;
+  width: clamp(68px, 9.5vw, 84px);
+  width: clamp(68px, 9.5dvw, 84px);
+  height: clamp(40px, 11vh, 50px);
+  height: clamp(40px, 11dvh, 50px);
   border-radius: 8px;
   border: 1.5px solid rgba(148, 163, 184, 0.55);
   background: linear-gradient(160deg, rgba(30, 41, 59, 0.72), rgba(10, 18, 34, 0.82));
@@ -1551,7 +1559,7 @@ body.mobile-mode.mobile-racing #mobile-controls {
 }
 
 .mobile-paddle .paddle-sym {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 900;
   color: var(--vw-light-blue);
 }
@@ -1561,7 +1569,7 @@ body.mobile-mode.mobile-racing #mobile-controls {
 }
 
 .mobile-paddle .paddle-lbl {
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.8px;
   color: #cbd5e1;
@@ -1580,15 +1588,18 @@ body.mobile-mode.mobile-racing #mobile-controls {
 
 #touch-pedals {
   display: flex;
-  gap: 10px;
+  gap: clamp(16px, 2.5vw, 24px);
+  gap: clamp(16px, 2.5dvw, 24px);
   pointer-events: none;
 }
 
 .mobile-pedal {
   pointer-events: auto;
   touch-action: none;
-  width: 60px;
-  height: 94px;
+  width: clamp(68px, 9.5vw, 84px);
+  width: clamp(68px, 9.5dvw, 84px);
+  height: clamp(98px, 27vh, 122px);
+  height: clamp(98px, 27dvh, 122px);
   border-radius: 10px 10px 7px 7px;
   background-color: rgba(10, 18, 34, 0.62);
   background-image: repeating-linear-gradient(
@@ -1603,7 +1614,7 @@ body.mobile-mode.mobile-racing #mobile-controls {
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding-bottom: 8px;
+  padding-bottom: 10px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
   transition: transform 0.06s ease, background-color 0.08s ease;
 }
@@ -1619,7 +1630,7 @@ body.mobile-mode.mobile-racing #mobile-controls {
 }
 
 .pedal-tag {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.9px;
 }
@@ -1664,28 +1675,6 @@ body.mobile-mode.mobile-racing #mobile-controls {
   }
   body.mobile-mode .pause-sub {
     font-size: 10.5px;
-  }
-  #mobile-right-controls {
-    right: calc(10px + env(safe-area-inset-right));
-    bottom: calc(10px + env(safe-area-inset-bottom));
-    gap: 10px;
-  }
-  #touch-look-zone {
-    width: 68px;
-    height: 68px;
-    margin-bottom: 6px;
-  }
-  #touch-look-puck {
-    width: 30px;
-    height: 30px;
-  }
-  .mobile-paddle {
-    width: 54px;
-    height: 36px;
-  }
-  .mobile-pedal {
-    width: 54px;
-    height: 82px;
   }
 }
 

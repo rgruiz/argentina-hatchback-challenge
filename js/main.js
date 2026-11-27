@@ -158,7 +158,7 @@
 
   // --- Race Mode & AI Opponents Pool (Equal Stock Physics + Random Cars) ---
   const TOTAL_RACE_LAPS = 3;
-  let raceMode = 'race1'; // 'race1' (1v1), 'race3' (Grid vs 3 AI), 'practice' (Solo)
+  let raceMode = 'race3'; // 'race3' (Grid vs 3 AI), 'race1' (1v1), 'practice' (Solo)
   const MAX_AI = 3;
   const AI_DRIVERS = [
     { name: 'M. ROSSI', skill: 0.99, lane: -1.6 },
