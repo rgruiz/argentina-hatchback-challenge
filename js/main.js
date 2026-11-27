@@ -15,6 +15,9 @@
   const btnCamera = document.getElementById('btn-camera');
   const btnShiftDown = document.getElementById('btn-shift-down');
   const btnShiftUp = document.getElementById('btn-shift-up');
+  const btnPause = document.getElementById('btn-pause');
+  const pauseIcon = document.getElementById('pause-icon');
+  const pauseLabel = document.getElementById('pause-label');
   const btnReset = document.getElementById('btn-reset');
   const btnAudio = document.getElementById('btn-audio');
   const btnMenu = document.getElementById('btn-menu');
@@ -45,6 +48,9 @@
   const raceFinishBanner = document.getElementById('race-finish-banner');
   const finishTitleEl = document.getElementById('finish-title');
   const finishSubEl = document.getElementById('finish-sub');
+  const racePauseBanner = document.getElementById('race-pause-banner');
+  const pauseSubEl = document.getElementById('pause-sub');
+  const btnResumeBanner = document.getElementById('btn-resume-banner');
   const startLightsBox = document.getElementById('start-lights');
   const lightBulbs = [
     document.getElementById('light-1'),
@@ -259,9 +265,30 @@
   };
 
   let inMenu = true;
+  let isPaused = false;
   let raceCanDrive = true;
-  let countdownTimers = [];
+  let countdownActive = false;
+  let countdownElapsed = 0;
+  let countdownStage = 0;
   let pendingStartAfterRotate = false;
+
+  function setPaused(paused) {
+    isPaused = Boolean(paused);
+    document.body.classList.toggle('race-paused', isPaused);
+    if (racePauseBanner) racePauseBanner.classList.toggle('hidden', !isPaused);
+    if (btnPause) btnPause.classList.toggle('active-cam', isPaused);
+    if (pauseIcon) pauseIcon.textContent = isPaused ? '▶' : '⏸';
+    if (pauseLabel) pauseLabel.textContent = isPaused ? 'REANUDAR' : 'PAUSA';
+    if (pauseSubEl) {
+      pauseSubEl.textContent = mobileControls.enabled
+        ? 'Tocá ▶ para reanudar la carrera'
+        : 'Presioná P o tocá REANUDAR para continuar';
+    }
+    if (isPaused) {
+      sound.silenceDynamic();
+      mobileControls.resetTouchInputs();
+    }
+  }
 
   // --- Mobile Touch Controls & Orientation / Fullscreen Manager ---
   function resizeRenderer() {
@@ -273,10 +300,12 @@
   const mobileControls = new MobileControls({
     onUserInteract: () => sound.init(),
     onShiftUp: () => {
+      if (inMenu || isPaused) return;
       sound.init();
       physics.manualShiftUp();
     },
     onShiftDown: () => {
+      if (inMenu || isPaused) return;
       sound.init();
       physics.manualShiftDown();
     },
@@ -366,26 +395,29 @@
     track.setTimeOfDay(currentTimeOfDay);
   }
 
-  // --- Start Lights Sequence ---
+  // --- Start Lights Sequence (dt-driven so Pause freezes exact stage cleanly) ---
   function triggerStartLightsCountdown() {
-    countdownTimers.forEach(t => clearTimeout(t));
-    countdownTimers = [];
-
     raceCanDrive = false;
+    countdownActive = true;
+    countdownElapsed = 0;
+    countdownStage = 0;
     startLightsBox.classList.remove('hidden');
     lightBulbs.forEach(b => {
       b.className = 'light-bulb';
     });
+  }
 
-    for (let i = 0; i < 5; i++) {
-      const tid = setTimeout(() => {
-        lightBulbs[i].classList.add('red');
-        sound.playBeep(440, 0.14);
-      }, (i + 1) * 420);
-      countdownTimers.push(tid);
+  function updateStartLights(dt) {
+    if (!countdownActive) return;
+    countdownElapsed += dt;
+
+    while (countdownStage < 5 && countdownElapsed >= (countdownStage + 1) * 0.42) {
+      lightBulbs[countdownStage].classList.add('red');
+      sound.playBeep(440, 0.14);
+      countdownStage++;
     }
 
-    const goTid = setTimeout(() => {
+    if (countdownStage === 5 && countdownElapsed >= 5 * 0.42 + 0.52) {
       lightBulbs.forEach(b => {
         b.className = 'light-bulb green';
       });
@@ -395,20 +427,20 @@
         if (ai.active) ai.physics.timingStarted = true;
       });
       sound.playBeep(880, 0.35);
+      countdownStage = 6;
+    }
 
-      const hideTid = setTimeout(() => {
-        startLightsBox.classList.add('hidden');
-      }, 1400);
-      countdownTimers.push(hideTid);
-    }, 5 * 420 + 520);
-    countdownTimers.push(goTid);
+    if (countdownStage === 6 && countdownElapsed >= 5 * 0.42 + 0.52 + 1.40) {
+      startLightsBox.classList.add('hidden');
+      countdownActive = false;
+    }
   }
 
   // --- Keyboard Listeners ---
   window.addEventListener('keydown', e => {
     const code = e.code;
 
-    if (!inMenu) {
+    if (!inMenu && !isPaused) {
       sound.init();
     }
 
@@ -432,15 +464,19 @@
     } else if (code === 'KeyC' && !e.repeat) {
       setCameraMode(cameraMode + 1);
     } else if ((code === 'KeyE' || code === 'ShiftLeft' || code === 'ShiftRight') && !e.repeat) {
-      physics.manualShiftUp();
+      if (!inMenu && !isPaused) physics.manualShiftUp();
     } else if ((code === 'KeyQ' || code === 'ControlLeft' || code === 'ControlRight') && !e.repeat) {
-      physics.manualShiftDown();
+      if (!inMenu && !isPaused) physics.manualShiftDown();
+    } else if (code === 'KeyP' && !e.repeat) {
+      if (!inMenu) setPaused(!isPaused);
     } else if (code === 'KeyR' && !e.repeat) {
+      setPaused(false);
       setupSessionAndGrid();
       chaseCamHeading = physics.heading;
       triggerStartLightsCountdown();
     } else if (code === 'Escape' && !e.repeat) {
       inMenu = !inMenu;
+      if (inMenu) setPaused(false);
       menuOverlay.classList.toggle('hidden', !inMenu);
       mobileControls.syncState(inMenu);
     }
@@ -466,19 +502,38 @@
   });
 
   btnShiftDown.addEventListener('click', () => {
+    if (inMenu || isPaused) return;
     sound.init();
     physics.manualShiftDown();
     btnShiftDown.blur();
   });
 
   btnShiftUp.addEventListener('click', () => {
+    if (inMenu || isPaused) return;
     sound.init();
     physics.manualShiftUp();
     btnShiftUp.blur();
   });
 
+  if (btnPause) {
+    btnPause.addEventListener('click', () => {
+      if (!inMenu) {
+        setPaused(!isPaused);
+      }
+      btnPause.blur();
+    });
+  }
+
+  if (btnResumeBanner) {
+    btnResumeBanner.addEventListener('click', () => {
+      setPaused(false);
+      btnResumeBanner.blur();
+    });
+  }
+
   btnReset.addEventListener('click', () => {
     sound.init();
+    setPaused(false);
     mobileControls.resetTouchInputs();
     setupSessionAndGrid();
     chaseCamHeading = physics.heading;
@@ -495,6 +550,7 @@
 
   btnMenu.addEventListener('click', () => {
     inMenu = !inMenu;
+    if (inMenu) setPaused(false);
     menuOverlay.classList.toggle('hidden', !inMenu);
     mobileControls.syncState(inMenu);
     btnMenu.blur();
@@ -614,6 +670,7 @@
 
   btnStartRace.addEventListener('click', () => {
     sound.init();
+    setPaused(false);
     if (mobileControls.enabled) {
       mobileControls.requestFullscreenAndLandscape();
     }
@@ -1126,7 +1183,11 @@
       // Keep scene rendered cleanly behind portrait rotation prompt while paused
       sound.silenceDynamic();
       updateCamera(dt);
+    } else if (isPaused) {
+      // Freeze race simulation cleanly while keeping all car positions, speeds, headings & timers intact
+      sound.silenceDynamic();
     } else {
+      updateStartLights(dt);
       const activeAIs = getActiveAIs();
       const allPhysics = [physics, ...activeAIs.map(a => a.physics)];
       const frameInputs = {

@@ -66,6 +66,12 @@
             <div class="finish-title" id="finish-title">🏁 ¡CARRERA FINALIZADA!</div>
             <div class="finish-sub" id="finish-sub">Presioná R para revancha o ESC para el taller</div>
           </div>
+
+          <div class="race-pause-banner hidden" id="race-pause-banner" role="status" aria-live="polite">
+            <div class="pause-title">⏸ CARRERA EN PAUSA</div>
+            <div class="pause-sub" id="pause-sub">Presioná P o tocá PAUSA para continuar</div>
+            <button type="button" class="pause-resume-btn" id="btn-resume-banner">▶ REANUDAR</button>
+          </div>
         </div>
 
         <!-- Right: Camera Switcher & Quick Toggles -->
@@ -82,6 +88,11 @@
             <button class="hud-btn" id="btn-shift-up" title="Subir cambio (E / Shift)">
               <span>CAMBIO +</span>
               <span class="key-hint">E</span>
+            </button>
+            <button class="hud-btn" id="btn-pause" title="Pausar / reanudar carrera (P)">
+              <span id="pause-icon">⏸</span>
+              <span id="pause-label">PAUSA</span>
+              <span class="key-hint">P</span>
             </button>
             <button class="hud-btn" id="btn-reset" title="Reiniciar auto en pista (R)">
               <span>REINICIAR</span>
@@ -105,7 +116,8 @@
             <strong>E / SHIFT</strong> Subir cambio &nbsp;|&nbsp;
             <strong>Q / CTRL</strong> Bajar cambio &nbsp;|&nbsp;
             <strong>V / B / N</strong> Mirar Izq. / Atrás / Der. &nbsp;|&nbsp;
-            <strong>C</strong> Cámara
+            <strong>C</strong> Cámara &nbsp;|&nbsp;
+            <strong>P</strong> Pausa
           </div>
         </div>
       </div>
@@ -359,7 +371,7 @@
         <div class="menu-footer">
           <div class="controls-summary desktop-only">
             <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> Acelerar, frenar y doblar &nbsp;|&nbsp; <kbd>E</kbd> / <kbd>SHIFT</kbd> Subir cambio &nbsp;|&nbsp; <kbd>Q</kbd> / <kbd>CTRL</kbd> Bajar cambio</div>
-            <div><kbd>C</kbd> Cambiar cámara (Cabina / 3.ª persona) &nbsp;|&nbsp; <kbd>ESPACIO</kbd> Freno de mano &nbsp;|&nbsp; <kbd>V</kbd>/<kbd>B</kbd>/<kbd>N</kbd> Mirar Izq. / Atrás / Der. &nbsp;|&nbsp; <kbd>R</kbd> Reiniciar</div>
+            <div><kbd>C</kbd> Cambiar cámara (Cabina / 3.ª persona) &nbsp;|&nbsp; <kbd>ESPACIO</kbd> Freno de mano &nbsp;|&nbsp; <kbd>V</kbd>/<kbd>B</kbd>/<kbd>N</kbd> Mirar Izq. / Atrás / Der. &nbsp;|&nbsp; <kbd>R</kbd> Reiniciar &nbsp;|&nbsp; <kbd>P</kbd> Pausa</div>
           </div>
           <div class="controls-summary mobile-only">
             Volante izq. para doblar &bull; Pedales der. para acelerar/frenar &bull; Levas &minus;/+ para cambios &bull; Joystick der. para mirar alrededor
