@@ -1109,6 +1109,7 @@
 
     if (inMenu) {
       // Showcase orbiting camera around the grid while in Garage Menu
+      sound.silenceDynamic();
       car.setDriverSeatOpacity(1.0);
       car.updateVisuals(dt, physics);
       getActiveAIs().forEach(ai => {
@@ -1123,6 +1124,7 @@
       camera.lookAt(physics.x, physics.y + 0.78, physics.z);
     } else if (mobileControls.enabled && mobileControls.pausedForOrientation) {
       // Keep scene rendered cleanly behind portrait rotation prompt while paused
+      sound.silenceDynamic();
       updateCamera(dt);
     } else {
       const activeAIs = getActiveAIs();
@@ -1189,6 +1191,20 @@
         physics.slipRatio,
         physics.onCurb,
         physics.speedKmh,
+        cameraMode === 1,
+        physics.brakeInput,
+        physics.handbrakeInput,
+        physics.surface
+      );
+      sound.updateAIVoices(
+        {
+          x: physics.x,
+          z: physics.z,
+          vx: physics.vx,
+          vz: physics.vz,
+          heading: physics.heading
+        },
+        activeAIs,
         cameraMode === 1
       );
       updateHUD();
