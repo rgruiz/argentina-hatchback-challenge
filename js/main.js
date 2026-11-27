@@ -21,6 +21,8 @@
   const btnReset = document.getElementById('btn-reset');
   const btnAudio = document.getElementById('btn-audio');
   const btnMenu = document.getElementById('btn-menu');
+  const btnMenuAnthem = document.getElementById('btn-menu-anthem');
+  const menuAnthemLabel = document.getElementById('menu-anthem-label');
 
   const camLabel = document.getElementById('cam-label');
   const audioLabel = document.getElementById('audio-label');
@@ -100,6 +102,7 @@
 
   // --- Core Game Modules ---
   const sound = new SoundEngine();
+  const anthemPlayer = new AnthemMidiPlayer(sound);
   const track = new BuenosAiresTrack(scene);
   track.build('8');
 
@@ -479,6 +482,7 @@
       if (inMenu) setPaused(false);
       menuOverlay.classList.toggle('hidden', !inMenu);
       mobileControls.syncState(inMenu);
+      syncMenuAnthem();
     }
   });
 
@@ -545,6 +549,8 @@
     sound.init();
     const muted = sound.toggleMute();
     audioLabel.textContent = muted ? 'SONIDO: NO' : 'SONIDO: SÍ';
+    anthemPlayer.setGlobalMuted(muted);
+    updateAnthemButtonUI();
     btnAudio.blur();
   });
 
@@ -553,8 +559,81 @@
     if (inMenu) setPaused(false);
     menuOverlay.classList.toggle('hidden', !inMenu);
     mobileControls.syncState(inMenu);
+    syncMenuAnthem();
     btnMenu.blur();
   });
+
+  function updateAnthemButtonUI() {
+    if (!btnMenuAnthem || !menuAnthemLabel) return;
+    const status = anthemPlayer.getStatus();
+    btnMenuAnthem.classList.toggle('playing', status === 'playing');
+    btnMenuAnthem.classList.toggle('muted', status === 'muted');
+    if (status === 'playing') {
+      menuAnthemLabel.textContent = '♫ HIMNO: SÍ';
+    } else if (status === 'muted') {
+      menuAnthemLabel.textContent = '♫ HIMNO: NO';
+    } else if (status === 'waiting') {
+      menuAnthemLabel.textContent = '♫ HIMNO: TOCÁ PARA OÍR';
+    } else {
+      menuAnthemLabel.textContent = '♫ HIMNO: SÍ';
+    }
+  }
+
+  anthemPlayer.onStateChange = updateAnthemButtonUI;
+
+  function syncMenuAnthem() {
+    if (inMenu) {
+      const hasUserActivation =
+        Boolean(sound.ctx && sound.ctx.state === 'running') ||
+        Boolean(navigator.userActivation && navigator.userActivation.hasBeenActive);
+      if (hasUserActivation && !anthemPlayer.userMuted && !anthemPlayer.globalMuted) {
+        sound.init();
+        anthemPlayer.start();
+      } else {
+        anthemPlayer.wantsPlay = !anthemPlayer.userMuted && !anthemPlayer.globalMuted;
+      }
+    } else {
+      anthemPlayer.stop(0.3);
+    }
+    updateAnthemButtonUI();
+  }
+
+  function unlockMenuAnthemOnGesture(event) {
+    if (!inMenu) return;
+    const target = event && event.target;
+    if (
+      target &&
+      target.closest &&
+      (target.closest('#btn-menu-anthem') || target.closest('#btn-start-race'))
+    ) {
+      return;
+    }
+    if (anthemPlayer.getStatus() === 'waiting') {
+      sound.init();
+      anthemPlayer.start();
+      updateAnthemButtonUI();
+    }
+  }
+
+  document.addEventListener('pointerdown', unlockMenuAnthemOnGesture, true);
+  document.addEventListener('keydown', unlockMenuAnthemOnGesture, true);
+
+  if (btnMenuAnthem) {
+    btnMenuAnthem.addEventListener('click', () => {
+      sound.init();
+      if (anthemPlayer.getStatus() === 'waiting') {
+        anthemPlayer.userMuted = false;
+        anthemPlayer.start();
+      } else {
+        const muted = anthemPlayer.toggleUserMute();
+        if (!muted) {
+          anthemPlayer.start();
+        }
+      }
+      updateAnthemButtonUI();
+      btnMenuAnthem.blur();
+    });
+  }
 
   // --- Dynamic Car Switcher & Garage UI Sync ---
   function rebuildColorSwatches() {
@@ -676,6 +755,8 @@
     }
     inMenu = false;
     menuOverlay.classList.add('hidden');
+    anthemPlayer.stop(0.3);
+    updateAnthemButtonUI();
     setupSessionAndGrid();
     chaseCamHeading = physics.heading;
     mobileControls.syncState(false);
@@ -1277,5 +1358,6 @@
   // Initial state setup
   selectCar('polo');
   setCameraMode(0);
+  syncMenuAnthem();
   requestAnimationFrame(animate);
 })();

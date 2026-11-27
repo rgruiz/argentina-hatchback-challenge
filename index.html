@@ -254,10 +254,20 @@
             <h1>ARGENTINA HATCHBACK CHALLENGE</h1>
             <p>Autódromo Oscar y Juan Gálvez — Buenos Aires, Argentina</p>
           </div>
-          <div class="arg-flag-pill" title="Buenos Aires, Argentina">
-            <div class="arg-stripe"></div>
-            <div class="arg-stripe white"><div class="arg-sun"></div></div>
-            <div class="arg-stripe"></div>
+          <div class="menu-header-right">
+            <button
+              type="button"
+              id="btn-menu-anthem"
+              class="anthem-toggle-btn"
+              title="Reproducir o silenciar el Himno Nacional Argentino en el taller"
+            >
+              <span id="menu-anthem-label">♫ HIMNO: TOCÁ PARA OÍR</span>
+            </button>
+            <div class="arg-flag-pill" title="Buenos Aires, Argentina">
+              <div class="arg-stripe"></div>
+              <div class="arg-stripe white"><div class="arg-sun"></div></div>
+              <div class="arg-stripe"></div>
+            </div>
           </div>
         </div>
 
@@ -415,6 +425,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
   <!-- Game Modules -->
   <script src="js/audio.js"></script>
+  <script src="js/anthem-midi.js"></script>
   <script src="js/track.js"></script>
   <script src="js/car-cad.js"></script>
   <script src="js/car.js"></script>

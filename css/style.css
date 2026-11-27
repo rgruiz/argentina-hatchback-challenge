@@ -603,6 +603,50 @@ body.cockpit-active .minimap-panel {
   margin-top: 2px;
 }
 
+.menu-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.anthem-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(116, 172, 223, 0.55);
+  background: rgba(15, 23, 42, 0.78);
+  color: #e2e8f0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.12s ease;
+}
+
+.anthem-toggle-btn:hover {
+  border-color: var(--racing-yellow);
+  background: rgba(0, 119, 182, 0.35);
+  color: #ffffff;
+}
+
+.anthem-toggle-btn.playing {
+  border-color: #74acdf;
+  background: linear-gradient(135deg, rgba(0, 30, 80, 0.9), rgba(0, 119, 182, 0.72));
+  color: #ffd100;
+  box-shadow: 0 0 12px rgba(116, 172, 223, 0.28);
+}
+
+.anthem-toggle-btn.muted {
+  border-color: rgba(148, 163, 184, 0.45);
+  color: #94a3b8;
+}
+
 .arg-flag-pill {
   display: flex;
   flex-direction: column;
@@ -1075,6 +1119,23 @@ body.mobile-mode .title-block h1 {
 body.mobile-mode .title-block p {
   font-size: 10px;
   letter-spacing: 1px;
+}
+
+body.mobile-mode .menu-header {
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+body.mobile-mode .menu-header-right {
+  gap: 8px;
+}
+
+body.mobile-mode .anthem-toggle-btn {
+  padding: 6px 9px;
+  font-size: 10px;
+  letter-spacing: 0.4px;
 }
 
 body.mobile-mode .arg-flag-pill {
