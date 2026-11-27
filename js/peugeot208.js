@@ -55,6 +55,8 @@ class Peugeot208Car {
     this.mirrorCtx = null;
     this.mirrorTexture = null;
     this.exteriorGlassMat = null;
+    this.rearGlassMat = null;
+    this.driverSeatMat = null;
 
     this.smokeParticles = [];
     this.initSmokePool();
@@ -570,6 +572,7 @@ class Peugeot208Car {
       envMapIntensity: 1.35,
       side: THREE.DoubleSide
     });
+    this.rearGlassMat = rearGlassMat;
     const rearGlassStations = CarCAD.evaluateCubicSpline([
       { z: -1.73, pts: [[0, 0.955], [0.27, 0.955], [0.51, 0.946], [0.695, 0.938]] },
       { z: -1.53, pts: [[0, 1.162], [0.26, 1.162], [0.48, 1.152], [0.618, 1.140]] },
@@ -1142,17 +1145,19 @@ class Peugeot208Car {
     });
 
     // 2. Front Seats with White Contrast Stitch & Textured Gray Shoulder Bolsters (Image 3)
+    this.driverSeatMat = seatFabricMat.clone();
     [-0.35, 0.35].forEach(xPos => {
+      const seatMat = xPos > 0 ? this.driverSeatMat : seatFabricMat;
       const seatCushion = new THREE.Mesh(
         new THREE.BoxGeometry(0.45, 0.12, 0.46),
-        seatFabricMat
+        seatMat
       );
       seatCushion.position.set(xPos, 0.39, -0.18);
       this.cockpitGroup.add(seatCushion);
 
       const seatBack = new THREE.Mesh(
         new THREE.BoxGeometry(0.45, 0.60, 0.10),
-        seatFabricMat
+        seatMat
       );
       seatBack.position.set(xPos, 0.72, -0.42);
       seatBack.rotation.x = -0.16;
@@ -1160,7 +1165,7 @@ class Peugeot208Car {
 
       const headrest = new THREE.Mesh(
         new THREE.BoxGeometry(0.22, 0.18, 0.085),
-        seatFabricMat
+        seatMat
       );
       headrest.position.set(xPos, 1.10, -0.48);
       this.cockpitGroup.add(headrest);
@@ -2108,6 +2113,24 @@ class Peugeot208Car {
     if (this.exteriorGlassMat) {
       this.exteriorGlassMat.opacity = isCockpit ? 0.05 : 0.72;
     }
+    if (this.rearGlassMat) {
+      this.rearGlassMat.opacity = isCockpit ? 0.14 : 0.72;
+    }
+    if (!isCockpit) {
+      this.setDriverSeatOpacity(1.0);
+    }
+  }
+
+  setDriverSeatOpacity(opacity = 1.0) {
+    if (!this.driverSeatMat) return;
+    const clamped = Math.max(0, Math.min(1, opacity));
+    const isTrans = clamped < 0.99;
+    if (this.driverSeatMat.transparent !== isTrans) {
+      this.driverSeatMat.transparent = isTrans;
+      this.driverSeatMat.depthWrite = !isTrans;
+      this.driverSeatMat.needsUpdate = true;
+    }
+    this.driverSeatMat.opacity = clamped;
   }
 
   /**

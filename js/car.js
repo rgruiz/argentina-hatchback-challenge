@@ -51,6 +51,8 @@ class VWPoloTrackCar {
     this.mirrorCtx = null;
     this.mirrorTexture = null;
     this.exteriorGlassMat = null;
+    this.rearGlassMat = null;
+    this.driverSeatMat = null;
 
     this.smokeParticles = [];
     this.initSmokePool();
@@ -588,6 +590,7 @@ class VWPoloTrackCar {
       envMapIntensity: 1.35,
       side: THREE.DoubleSide
     });
+    this.rearGlassMat = rearGlassMat;
     const rearGlassStations = CarCAD.evaluateCubicSpline([
       { z: -1.75, pts: [[0, 0.972], [0.28, 0.972], [0.52, 0.962], [0.715, 0.955]] },
       { z: -1.56, pts: [[0, 1.175], [0.27, 1.175], [0.49, 1.164], [0.642, 1.152]] },
@@ -1154,17 +1157,19 @@ class VWPoloTrackCar {
     });
 
     // 2. Two-Tone Bolstered Seats with Light-Grey Side Wings & Contrast Stitch (Image 5)
+    this.driverSeatMat = seatFabricMat.clone();
     [-0.35, 0.35].forEach(xPos => {
+      const seatMat = xPos > 0 ? this.driverSeatMat : seatFabricMat;
       const seatCushion = new THREE.Mesh(
         new THREE.BoxGeometry(0.46, 0.12, 0.46),
-        seatFabricMat
+        seatMat
       );
       seatCushion.position.set(xPos, 0.39, -0.18);
       this.cockpitGroup.add(seatCushion);
 
       const seatBack = new THREE.Mesh(
         new THREE.BoxGeometry(0.46, 0.60, 0.10),
-        seatFabricMat
+        seatMat
       );
       seatBack.position.set(xPos, 0.72, -0.42);
       seatBack.rotation.x = -0.16;
@@ -1172,7 +1177,7 @@ class VWPoloTrackCar {
 
       const headrest = new THREE.Mesh(
         new THREE.BoxGeometry(0.22, 0.18, 0.085),
-        seatFabricMat
+        seatMat
       );
       headrest.position.set(xPos, 1.10, -0.48);
       this.cockpitGroup.add(headrest);
@@ -2192,6 +2197,24 @@ class VWPoloTrackCar {
     if (this.exteriorGlassMat) {
       this.exteriorGlassMat.opacity = isCockpit ? 0.05 : 0.72;
     }
+    if (this.rearGlassMat) {
+      this.rearGlassMat.opacity = isCockpit ? 0.14 : 0.72;
+    }
+    if (!isCockpit) {
+      this.setDriverSeatOpacity(1.0);
+    }
+  }
+
+  setDriverSeatOpacity(opacity = 1.0) {
+    if (!this.driverSeatMat) return;
+    const clamped = Math.max(0, Math.min(1, opacity));
+    const isTrans = clamped < 0.99;
+    if (this.driverSeatMat.transparent !== isTrans) {
+      this.driverSeatMat.transparent = isTrans;
+      this.driverSeatMat.depthWrite = !isTrans;
+      this.driverSeatMat.needsUpdate = true;
+    }
+    this.driverSeatMat.opacity = clamped;
   }
 
   /**

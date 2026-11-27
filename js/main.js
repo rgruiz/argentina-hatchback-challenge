@@ -664,6 +664,13 @@
     }
     const isLookingOffset = Math.abs(smoothLookYaw) > 0.005;
 
+    if (cameraMode === 1 && Math.abs(smoothLookYaw) > 0.12) {
+      const lookBlend = THREE.MathUtils.clamp((Math.abs(smoothLookYaw) - 0.12) / 0.45, 0, 1);
+      car.setDriverSeatOpacity(THREE.MathUtils.lerp(1.0, 0.08, lookBlend));
+    } else {
+      car.setDriverSeatOpacity(1.0);
+    }
+
     if (cameraMode === 1) {
       // ====================================================================
       // CAMERA 1: 3D COCKPIT INTERIOR CAMERA (Driver's Seat View)
@@ -1102,6 +1109,7 @@
 
     if (inMenu) {
       // Showcase orbiting camera around the grid while in Garage Menu
+      car.setDriverSeatOpacity(1.0);
       car.updateVisuals(dt, physics);
       getActiveAIs().forEach(ai => {
         if (ai.activeModel) ai.activeModel.updateVisuals(dt, ai.physics);
